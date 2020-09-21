@@ -1,3 +1,14 @@
+// replace by gcc
+#if defined(__linux__)
+
+  #define INLINE __attribute__((always_inline)) inline
+#else
+
+  #define INLINE inline
+#endif
+
+
+
 #include <iostream>
 
 using std::cout;
@@ -99,10 +110,10 @@ DECL_PROC(vkCreateDevice);
 DECL_PROC(vkCreateDebugReportCallbackEXT);
 DECL_PROC(vkDestroyDebugReportCallbackEXT);
 
-#if defined(__linux__)
+#if defined(VK_USE_PLATFORM_XLIB_KHR)
 
   DECL_PROC(vkCreateXlibSurfaceKHR);
-#elif defined(_WIN64)
+#elif defined(VK_USE_PLATFORM_WIN32_KHR)
 
   DECL_PROC(vkCreateWin32SurfaceKHR);
 #endif
@@ -132,6 +143,9 @@ DECL_PROC(vkDestroyImage);
 DECL_PROC(vkCreateImageView);
 DECL_PROC(vkDestroyImageView);
 
+DECL_PROC(vkCreateSampler);
+DECL_PROC(vkDestroySampler);
+
 DECL_PROC(vkCreateRenderPass);
 DECL_PROC(vkDestroyRenderPass);
 
@@ -144,13 +158,20 @@ DECL_PROC(vkCmdClearColorImage);
 DECL_PROC(vkCmdBeginRenderPass);
 DECL_PROC(vkCmdBindPipeline);
 DECL_PROC(vkCmdBindVertexBuffers);
+DECL_PROC(vkCmdBindIndexBuffer);
 DECL_PROC(vkCmdBindDescriptorSets);
 DECL_PROC(vkCmdDraw);
 DECL_PROC(vkCmdEndRenderPass);
+DECL_PROC(vkCmdSetViewport);
+DECL_PROC(vkCmdPushConstants);
+DECL_PROC(vkCmdSetScissor);
+DECL_PROC(vkCmdDrawIndexed);
+DECL_PROC(vkCmdCopyBufferToImage);
 DECL_PROC(vkEndCommandBuffer);
 DECL_PROC(vkResetCommandBuffer);
 
 DECL_PROC(vkCreateCommandPool);
+DECL_PROC(vkResetCommandPool);
 DECL_PROC(vkAllocateCommandBuffers);
 DECL_PROC(vkFreeCommandBuffers);
 DECL_PROC(vkDestroyCommandPool);
@@ -302,6 +323,9 @@ namespace XGK::VULKAN {
     GET_PROC_ADDR(vkCreateImageView);
     GET_PROC_ADDR(vkDestroyImageView);
 
+    GET_PROC_ADDR(vkCreateSampler);
+    GET_PROC_ADDR(vkDestroySampler);
+
     GET_PROC_ADDR(vkCreateRenderPass);
     GET_PROC_ADDR(vkDestroyRenderPass);
 
@@ -314,13 +338,20 @@ namespace XGK::VULKAN {
     GET_PROC_ADDR(vkCmdBeginRenderPass);
     GET_PROC_ADDR(vkCmdBindPipeline);
     GET_PROC_ADDR(vkCmdBindVertexBuffers);
+    GET_PROC_ADDR(vkCmdBindIndexBuffer);
     GET_PROC_ADDR(vkCmdBindDescriptorSets);
     GET_PROC_ADDR(vkCmdDraw);
     GET_PROC_ADDR(vkCmdEndRenderPass);
+    GET_PROC_ADDR(vkCmdSetViewport);
+    GET_PROC_ADDR(vkCmdPushConstants);
+    GET_PROC_ADDR(vkCmdSetScissor);
+    GET_PROC_ADDR(vkCmdDrawIndexed);
+    GET_PROC_ADDR(vkCmdCopyBufferToImage);
     GET_PROC_ADDR(vkEndCommandBuffer);
     GET_PROC_ADDR(vkResetCommandBuffer);
 
     GET_PROC_ADDR(vkCreateCommandPool);
+    GET_PROC_ADDR(vkResetCommandPool);
     GET_PROC_ADDR(vkAllocateCommandBuffers);
     GET_PROC_ADDR(vkFreeCommandBuffers);
     GET_PROC_ADDR(vkDestroyCommandPool);
@@ -368,7 +399,7 @@ namespace XGK::VULKAN {
 
 
 
-  VkApplicationInfo AppI (
+  INLINE VkApplicationInfo AppI (
 
     uint32_t    apiVersion         = VK_API_VERSION_1_0,
     const char* pApplicationName   = nullptr,
@@ -949,7 +980,7 @@ namespace XGK::VULKAN {
 
 
 
-  VkCommandBufferBeginInfo CmdBufferBeginI (
+  INLINE VkCommandBufferBeginInfo CmdBufferBeginI (
 
     const VkCommandBufferInheritanceInfo* pInheritanceInfo = nullptr,
     VkCommandBufferUsageFlags             flags            = 0,
@@ -969,7 +1000,7 @@ namespace XGK::VULKAN {
 
 
 
-  VkRenderPassBeginInfo RenderPassBeginI (
+  INLINE VkRenderPassBeginInfo RenderPassBeginI (
 
     VkRenderPass        renderPass      = VK_NULL_HANDLE,
     VkFramebuffer       framebuffer     = VK_NULL_HANDLE,
@@ -995,7 +1026,7 @@ namespace XGK::VULKAN {
 
 
 
-  VkSubmitInfo SubmitI (
+  INLINE VkSubmitInfo SubmitI (
 
     uint32_t                    waitSemaphoreCount   = 0,
     const VkSemaphore*          pWaitSemaphores      = nullptr,
@@ -1025,7 +1056,7 @@ namespace XGK::VULKAN {
 
 
 
-  VkPresentInfoKHR PresentI (
+  INLINE VkPresentInfoKHR PresentI (
 
     uint32_t              waitSemaphoreCount = 0,
     const VkSemaphore*    pWaitSemaphores    = nullptr,
