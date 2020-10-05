@@ -401,7 +401,7 @@ namespace XGK::VULKAN {
 
   INLINE VkApplicationInfo AppI (
 
-    uint32_t    apiVersion         = VK_API_VERSION_1_0,
+    uint32_t    apiVersion         = VK_API_VERSION_1_2,
     const char* pApplicationName   = nullptr,
     uint32_t    applicationVersion = 0,
     const char* pEngineName        = nullptr,
@@ -1233,21 +1233,23 @@ namespace XGK::VULKAN {
           present_queue_count = queue_family_props[i].queueCount;
         }
 
-        // std::cout << "queue family index: " << i << std::endl;
-        // std::cout << std::endl;
-        // std::cout << "graphics: " << (queue_family_props[i].queueFlags & VK_QUEUE_GRAPHICS_BIT || 0) << std::endl;
-        // std::cout << "compute: " << (queue_family_props[i].queueFlags & VK_QUEUE_COMPUTE_BIT || 0) << std::endl;
-        // std::cout << "transfer: " << (queue_family_props[i].queueFlags & VK_QUEUE_TRANSFER_BIT || 0) << std::endl;
-        // std::cout << "sparse binding: " << (queue_family_props[i].queueFlags & VK_QUEUE_SPARSE_BINDING_BIT || 0) << std::endl;
-        // std::cout << "protected: " << (queue_family_props[i].queueFlags & VK_QUEUE_PROTECTED_BIT || 0) << std::endl;
-        // std::cout << "all: " << (queue_family_props[i].queueFlags & VK_QUEUE_FLAG_BITS_MAX_ENUM || 0) << std::endl;
-        // std::cout << std::endl;
-        // std::cout << "queue count: " << queue_family_props[i].queueCount << std::endl;
-        // std::cout << "timestamp valid bits: " << queue_family_props[i].timestampValidBits << std::endl;
-        // // std::cout << queue_family_props[i].minImageTransferGranularity << std::endl;
-        // std::cout << "presentation support: " << surface_support << std::endl;
-        // std::cout << std::endl << std::endl;
+        std::cout << "queue family index: " << i << std::endl;
+        std::cout << std::endl;
+        std::cout << "graphics: " << (queue_family_props[i].queueFlags & VK_QUEUE_GRAPHICS_BIT || 0) << std::endl;
+        std::cout << "compute: " << (queue_family_props[i].queueFlags & VK_QUEUE_COMPUTE_BIT || 0) << std::endl;
+        std::cout << "transfer: " << (queue_family_props[i].queueFlags & VK_QUEUE_TRANSFER_BIT || 0) << std::endl;
+        std::cout << "sparse binding: " << (queue_family_props[i].queueFlags & VK_QUEUE_SPARSE_BINDING_BIT || 0) << std::endl;
+        std::cout << "protected: " << (queue_family_props[i].queueFlags & VK_QUEUE_PROTECTED_BIT || 0) << std::endl;
+        std::cout << "all: " << (queue_family_props[i].queueFlags & VK_QUEUE_FLAG_BITS_MAX_ENUM || 0) << std::endl;
+        std::cout << std::endl;
+        std::cout << "queue count: " << queue_family_props[i].queueCount << std::endl;
+        std::cout << "timestamp valid bits: " << queue_family_props[i].timestampValidBits << std::endl;
+        // std::cout << queue_family_props[i].minImageTransferGranularity << std::endl;
+        std::cout << "presentation support: " << surface_support << std::endl;
+        std::cout << std::endl << std::endl;
       }
+
+      // throw "";
     };
 
     void create (
