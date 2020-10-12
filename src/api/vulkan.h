@@ -1,10 +1,9 @@
-// replace by gcc
-#if defined(__linux__)
+#if defined(__GNUC__) || defined(__GNUG__)
 
-  #define INLINE __attribute__((always_inline)) inline
+	#define INLINE __attribute__((always_inline)) inline
 #else
 
-  #define INLINE inline
+	#define INLINE __forceinline
 #endif
 
 
@@ -46,42 +45,42 @@ using std::endl;
 
 #if defined(__linux__)
 
-  #define SHARED_LIBRARY_MODULE_TYPE void*
-  #define SHARED_LIBRARY_MODULE_INIT_VALUE nullptr
-  #define SHARED_LIBRARY_LOAD dlopen("libvulkan.so.1", RTLD_LAZY)
-  #define SHARED_LIBRARY_LOAD_FUNCTION dlsym
-  #define SHARED_LIBRARY_FREE dlclose
+	#define SHARED_LIBRARY_MODULE_TYPE void*
+	#define SHARED_LIBRARY_MODULE_INIT_VALUE nullptr
+	#define SHARED_LIBRARY_LOAD dlopen("libvulkan.so.1", RTLD_LAZY)
+	#define SHARED_LIBRARY_LOAD_FUNCTION dlsym
+	#define SHARED_LIBRARY_FREE dlclose
 #elif defined(_WIN64)
 
-  #define SHARED_LIBRARY_MODULE_TYPE HMODULE
-  #define SHARED_LIBRARY_MODULE_INIT_VALUE 0
-  #define SHARED_LIBRARY_LOAD LoadLibrary("vulkan-1.dll")
-  #define SHARED_LIBRARY_LOAD_FUNCTION GetProcAddress
-  #define SHARED_LIBRARY_FREE FreeLibrary
+	#define SHARED_LIBRARY_MODULE_TYPE HMODULE
+	#define SHARED_LIBRARY_MODULE_INIT_VALUE 0
+	#define SHARED_LIBRARY_LOAD LoadLibrary("vulkan-1.dll")
+	#define SHARED_LIBRARY_LOAD_FUNCTION GetProcAddress
+	#define SHARED_LIBRARY_FREE FreeLibrary
 #endif
 
 
 
 #define XGK_VULKAN_MACRO_DECLARE_DEBUG_REPORT_CALLBACKS\
-  VkDebugReportCallbackEXT report_error = VK_NULL_HANDLE;\
-  // VkDebugReportCallbackEXT report_info = VK_NULL_HANDLE;\
-  // VkDebugReportCallbackEXT report_warn = VK_NULL_HANDLE;\
-  // VkDebugReportCallbackEXT report_perf = VK_NULL_HANDLE;\
-  // VkDebugReportCallbackEXT report_debug = VK_NULL_HANDLE;
+	VkDebugReportCallbackEXT report_error = VK_NULL_HANDLE;\
+	// VkDebugReportCallbackEXT report_info = VK_NULL_HANDLE;\
+	// VkDebugReportCallbackEXT report_warn = VK_NULL_HANDLE;\
+	// VkDebugReportCallbackEXT report_perf = VK_NULL_HANDLE;\
+	// VkDebugReportCallbackEXT report_debug = VK_NULL_HANDLE;
 
 #define XGK_VULKAN_MACRO_CREATE_DEBUG_REPORT_CALLBACKS(instance)\
-  report_error = DebugReportCallbackEXT(&reportError, VK_DEBUG_REPORT_ERROR_BIT_EXT);\
-  // report_info = DebugReportCallbackEXT(&reportInfo, VK_DEBUG_REPORT_INFORMATION_BIT_EXT);\
-  // report_warn = DebugReportCallbackEXT(&reportWarn, VK_DEBUG_REPORT_WARNING_BIT_EXT);\
-  // report_perf = DebugReportCallbackEXT(&reportPerf, VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT);\
-  // report_debug = DebugReportCallbackEXT(&reportDebug, VK_DEBUG_REPORT_DEBUG_BIT_EXT);
+	report_error = DebugReportCallbackEXT(&reportError, VK_DEBUG_REPORT_ERROR_BIT_EXT);\
+	// report_info = DebugReportCallbackEXT(&reportInfo, VK_DEBUG_REPORT_INFORMATION_BIT_EXT);\
+	// report_warn = DebugReportCallbackEXT(&reportWarn, VK_DEBUG_REPORT_WARNING_BIT_EXT);\
+	// report_perf = DebugReportCallbackEXT(&reportPerf, VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT);\
+	// report_debug = DebugReportCallbackEXT(&reportDebug, VK_DEBUG_REPORT_DEBUG_BIT_EXT);
 
 #define XGK_VULKAN_MACRO_DESTROY_DEBUG_REPORT_CALLBACKS(instance)\
-  vkDestroyDebugReportCallbackEXT(instance, report_error, nullptr);\
-  // vkDestroyDebugReportCallbackEXT(instance, report_debug, nullptr);\
-  // vkDestroyDebugReportCallbackEXT(instance, report_perf, nullptr);\
-  // vkDestroyDebugReportCallbackEXT(instance, report_warn, nullptr);\
-  // vkDestroyDebugReportCallbackEXT(instance, report_info, nullptr);
+	vkDestroyDebugReportCallbackEXT(instance, report_error, nullptr);\
+	// vkDestroyDebugReportCallbackEXT(instance, report_debug, nullptr);\
+	// vkDestroyDebugReportCallbackEXT(instance, report_perf, nullptr);\
+	// vkDestroyDebugReportCallbackEXT(instance, report_warn, nullptr);\
+	// vkDestroyDebugReportCallbackEXT(instance, report_info, nullptr);
 
 
 
@@ -112,10 +111,10 @@ DECL_PROC(vkDestroyDebugReportCallbackEXT);
 
 #if defined(VK_USE_PLATFORM_XLIB_KHR)
 
-  DECL_PROC(vkCreateXlibSurfaceKHR);
+	DECL_PROC(vkCreateXlibSurfaceKHR);
 #elif defined(VK_USE_PLATFORM_WIN32_KHR)
 
-  DECL_PROC(vkCreateWin32SurfaceKHR);
+	DECL_PROC(vkCreateWin32SurfaceKHR);
 #endif
 
 DECL_PROC(vkGetPhysicalDeviceSurfaceSupportKHR);
@@ -220,1843 +219,1843 @@ DECL_PROC(vkDestroyDescriptorSetLayout);
 
 namespace XGK::VULKAN {
 
-  SHARED_LIBRARY_MODULE_TYPE shared_library_module_handle = SHARED_LIBRARY_MODULE_INIT_VALUE;
+	SHARED_LIBRARY_MODULE_TYPE shared_library_module_handle = SHARED_LIBRARY_MODULE_INIT_VALUE;
 
 
 
-  void loadGlobalFunctions (void) {
+	void loadGlobalFunctions (void) {
 
-    vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr) SHARED_LIBRARY_LOAD_FUNCTION(shared_library_module_handle, "vkGetInstanceProcAddr");
+		vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr) SHARED_LIBRARY_LOAD_FUNCTION(shared_library_module_handle, "vkGetInstanceProcAddr");
 
-    #define GET_PROC_ADDR(name) name = (PFN_##name) vkGetInstanceProcAddr(nullptr, #name)
+		#define GET_PROC_ADDR(name) name = (PFN_##name) vkGetInstanceProcAddr(nullptr, #name)
 
-    GET_PROC_ADDR(vkCreateInstance);
-    GET_PROC_ADDR(vkEnumerateInstanceLayerProperties);
-    GET_PROC_ADDR(vkEnumerateInstanceExtensionProperties);
+		GET_PROC_ADDR(vkCreateInstance);
+		GET_PROC_ADDR(vkEnumerateInstanceLayerProperties);
+		GET_PROC_ADDR(vkEnumerateInstanceExtensionProperties);
 
-    #undef GET_PROC_ADDR
-  };
+		#undef GET_PROC_ADDR
+	};
 
-  void loadSharedLibrary (void) {
+	void loadSharedLibrary (void) {
 
-    // if (shared_library_module_handle) {
+		// if (shared_library_module_handle) {
 
-    //   // cout << "LIB " << shared_library_module_handle << endl;
+		//   // cout << "LIB " << shared_library_module_handle << endl;
 
-    //   // SHARED_LIBRARY_FREE(shared_library_module_handle);
+		//   // SHARED_LIBRARY_FREE(shared_library_module_handle);
 
-    //   cout << "DLCLOSE " << SHARED_LIBRARY_FREE(shared_library_module_handle) << endl;
+		//   cout << "DLCLOSE " << SHARED_LIBRARY_FREE(shared_library_module_handle) << endl;
 
-    //   // shared_library_module_handle = SHARED_LIBRARY_MODULE_INIT_VALUE;
-    // }
+		//   // shared_library_module_handle = SHARED_LIBRARY_MODULE_INIT_VALUE;
+		// }
 
-    shared_library_module_handle = SHARED_LIBRARY_LOAD;
+		shared_library_module_handle = SHARED_LIBRARY_LOAD;
 
-    // cout << "LIB " << shared_library_module_handle << endl;
-  };
+		// cout << "LIB " << shared_library_module_handle << endl;
+	};
 
-  void freeSharedLibrary (void) {
+	void freeSharedLibrary (void) {
 
-    // SHARED_LIBRARY_FREE(shared_library_module_handle);
+		// SHARED_LIBRARY_FREE(shared_library_module_handle);
 
-    // cout << "DLCLOSE " << SHARED_LIBRARY_FREE(shared_library_module_handle) << endl;
+		// cout << "DLCLOSE " << SHARED_LIBRARY_FREE(shared_library_module_handle) << endl;
 
-    shared_library_module_handle = SHARED_LIBRARY_MODULE_INIT_VALUE;
-  };
+		shared_library_module_handle = SHARED_LIBRARY_MODULE_INIT_VALUE;
+	};
 
-  void loadInstanceFunctions (VkInstance instance) {
+	void loadInstanceFunctions (VkInstance instance) {
 
-    #define GET_PROC_ADDR(name) name = (PFN_##name) vkGetInstanceProcAddr(instance, #name)
+		#define GET_PROC_ADDR(name) name = (PFN_##name) vkGetInstanceProcAddr(instance, #name)
 
-    GET_PROC_ADDR(vkDestroyInstance);
+		GET_PROC_ADDR(vkDestroyInstance);
 
-    GET_PROC_ADDR(vkEnumeratePhysicalDevices);
-    GET_PROC_ADDR(vkGetPhysicalDeviceProperties);
-    GET_PROC_ADDR(vkGetPhysicalDeviceFeatures);
-    GET_PROC_ADDR(vkGetPhysicalDeviceQueueFamilyProperties);
-    GET_PROC_ADDR(vkGetPhysicalDeviceMemoryProperties);
-    GET_PROC_ADDR(vkGetPhysicalDeviceFormatProperties);
+		GET_PROC_ADDR(vkEnumeratePhysicalDevices);
+		GET_PROC_ADDR(vkGetPhysicalDeviceProperties);
+		GET_PROC_ADDR(vkGetPhysicalDeviceFeatures);
+		GET_PROC_ADDR(vkGetPhysicalDeviceQueueFamilyProperties);
+		GET_PROC_ADDR(vkGetPhysicalDeviceMemoryProperties);
+		GET_PROC_ADDR(vkGetPhysicalDeviceFormatProperties);
 
-    GET_PROC_ADDR(vkGetDeviceProcAddr);
-    GET_PROC_ADDR(vkCreateDevice);
+		GET_PROC_ADDR(vkGetDeviceProcAddr);
+		GET_PROC_ADDR(vkCreateDevice);
 
-    GET_PROC_ADDR(vkCreateDebugReportCallbackEXT);
-    GET_PROC_ADDR(vkDestroyDebugReportCallbackEXT);
+		GET_PROC_ADDR(vkCreateDebugReportCallbackEXT);
+		GET_PROC_ADDR(vkDestroyDebugReportCallbackEXT);
 
-    #if defined(__linux__)
+		#if defined(__linux__)
 
-      GET_PROC_ADDR(vkCreateXlibSurfaceKHR);
-    #elif defined(_WIN64)
+			GET_PROC_ADDR(vkCreateXlibSurfaceKHR);
+		#elif defined(_WIN64)
 
-      GET_PROC_ADDR(vkCreateWin32SurfaceKHR);
-    #endif
+			GET_PROC_ADDR(vkCreateWin32SurfaceKHR);
+		#endif
 
-    GET_PROC_ADDR(vkGetPhysicalDeviceSurfaceSupportKHR);
-    GET_PROC_ADDR(vkGetPhysicalDeviceSurfaceCapabilitiesKHR);
-    GET_PROC_ADDR(vkGetPhysicalDeviceSurfaceFormatsKHR);
-    GET_PROC_ADDR(vkGetPhysicalDeviceSurfacePresentModesKHR);
-    GET_PROC_ADDR(vkDestroySurfaceKHR);
+		GET_PROC_ADDR(vkGetPhysicalDeviceSurfaceSupportKHR);
+		GET_PROC_ADDR(vkGetPhysicalDeviceSurfaceCapabilitiesKHR);
+		GET_PROC_ADDR(vkGetPhysicalDeviceSurfaceFormatsKHR);
+		GET_PROC_ADDR(vkGetPhysicalDeviceSurfacePresentModesKHR);
+		GET_PROC_ADDR(vkDestroySurfaceKHR);
 
-    #undef GET_PROC_ADDR
-  };
+		#undef GET_PROC_ADDR
+	};
 
-  void loadDeviceFunctions (VkDevice device) {
+	void loadDeviceFunctions (VkDevice device) {
 
-    #define GET_PROC_ADDR(name) name = (PFN_##name) vkGetDeviceProcAddr(device, #name)
+		#define GET_PROC_ADDR(name) name = (PFN_##name) vkGetDeviceProcAddr(device, #name)
 
-    GET_PROC_ADDR(vkDeviceWaitIdle);
-    GET_PROC_ADDR(vkDestroyDevice);
+		GET_PROC_ADDR(vkDeviceWaitIdle);
+		GET_PROC_ADDR(vkDestroyDevice);
 
-    GET_PROC_ADDR(vkGetDeviceQueue);
-    GET_PROC_ADDR(vkQueueSubmit);
-    GET_PROC_ADDR(vkQueuePresentKHR);
-    GET_PROC_ADDR(vkQueueWaitIdle);
+		GET_PROC_ADDR(vkGetDeviceQueue);
+		GET_PROC_ADDR(vkQueueSubmit);
+		GET_PROC_ADDR(vkQueuePresentKHR);
+		GET_PROC_ADDR(vkQueueWaitIdle);
 
-    GET_PROC_ADDR(vkCreateSwapchainKHR);
-    GET_PROC_ADDR(vkGetSwapchainImagesKHR);
-    GET_PROC_ADDR(vkAcquireNextImageKHR);
-    GET_PROC_ADDR(vkDestroySwapchainKHR);
+		GET_PROC_ADDR(vkCreateSwapchainKHR);
+		GET_PROC_ADDR(vkGetSwapchainImagesKHR);
+		GET_PROC_ADDR(vkAcquireNextImageKHR);
+		GET_PROC_ADDR(vkDestroySwapchainKHR);
 
-    GET_PROC_ADDR(vkCreateImage);
-    GET_PROC_ADDR(vkDestroyImage);
+		GET_PROC_ADDR(vkCreateImage);
+		GET_PROC_ADDR(vkDestroyImage);
 
-    GET_PROC_ADDR(vkCreateImageView);
-    GET_PROC_ADDR(vkDestroyImageView);
-
-    GET_PROC_ADDR(vkCreateSampler);
-    GET_PROC_ADDR(vkDestroySampler);
-
-    GET_PROC_ADDR(vkCreateRenderPass);
-    GET_PROC_ADDR(vkDestroyRenderPass);
-
-    GET_PROC_ADDR(vkCreateFramebuffer);
-    GET_PROC_ADDR(vkDestroyFramebuffer);
-
-    GET_PROC_ADDR(vkBeginCommandBuffer);
-    GET_PROC_ADDR(vkCmdPipelineBarrier);
-    GET_PROC_ADDR(vkCmdClearColorImage);
-    GET_PROC_ADDR(vkCmdBeginRenderPass);
-    GET_PROC_ADDR(vkCmdBindPipeline);
-    GET_PROC_ADDR(vkCmdBindVertexBuffers);
-    GET_PROC_ADDR(vkCmdBindIndexBuffer);
-    GET_PROC_ADDR(vkCmdBindDescriptorSets);
-    GET_PROC_ADDR(vkCmdDraw);
-    GET_PROC_ADDR(vkCmdEndRenderPass);
-    GET_PROC_ADDR(vkCmdSetViewport);
-    GET_PROC_ADDR(vkCmdPushConstants);
-    GET_PROC_ADDR(vkCmdSetScissor);
-    GET_PROC_ADDR(vkCmdDrawIndexed);
-    GET_PROC_ADDR(vkCmdCopyBufferToImage);
-    GET_PROC_ADDR(vkEndCommandBuffer);
-    GET_PROC_ADDR(vkResetCommandBuffer);
-
-    GET_PROC_ADDR(vkCreateCommandPool);
-    GET_PROC_ADDR(vkResetCommandPool);
-    GET_PROC_ADDR(vkAllocateCommandBuffers);
-    GET_PROC_ADDR(vkFreeCommandBuffers);
-    GET_PROC_ADDR(vkDestroyCommandPool);
+		GET_PROC_ADDR(vkCreateImageView);
+		GET_PROC_ADDR(vkDestroyImageView);
+
+		GET_PROC_ADDR(vkCreateSampler);
+		GET_PROC_ADDR(vkDestroySampler);
+
+		GET_PROC_ADDR(vkCreateRenderPass);
+		GET_PROC_ADDR(vkDestroyRenderPass);
+
+		GET_PROC_ADDR(vkCreateFramebuffer);
+		GET_PROC_ADDR(vkDestroyFramebuffer);
+
+		GET_PROC_ADDR(vkBeginCommandBuffer);
+		GET_PROC_ADDR(vkCmdPipelineBarrier);
+		GET_PROC_ADDR(vkCmdClearColorImage);
+		GET_PROC_ADDR(vkCmdBeginRenderPass);
+		GET_PROC_ADDR(vkCmdBindPipeline);
+		GET_PROC_ADDR(vkCmdBindVertexBuffers);
+		GET_PROC_ADDR(vkCmdBindIndexBuffer);
+		GET_PROC_ADDR(vkCmdBindDescriptorSets);
+		GET_PROC_ADDR(vkCmdDraw);
+		GET_PROC_ADDR(vkCmdEndRenderPass);
+		GET_PROC_ADDR(vkCmdSetViewport);
+		GET_PROC_ADDR(vkCmdPushConstants);
+		GET_PROC_ADDR(vkCmdSetScissor);
+		GET_PROC_ADDR(vkCmdDrawIndexed);
+		GET_PROC_ADDR(vkCmdCopyBufferToImage);
+		GET_PROC_ADDR(vkEndCommandBuffer);
+		GET_PROC_ADDR(vkResetCommandBuffer);
+
+		GET_PROC_ADDR(vkCreateCommandPool);
+		GET_PROC_ADDR(vkResetCommandPool);
+		GET_PROC_ADDR(vkAllocateCommandBuffers);
+		GET_PROC_ADDR(vkFreeCommandBuffers);
+		GET_PROC_ADDR(vkDestroyCommandPool);
 
-    GET_PROC_ADDR(vkCreateSemaphore);
-    GET_PROC_ADDR(vkDestroySemaphore);
+		GET_PROC_ADDR(vkCreateSemaphore);
+		GET_PROC_ADDR(vkDestroySemaphore);
 
-    GET_PROC_ADDR(vkCreateFence);
-    GET_PROC_ADDR(vkWaitForFences);
-    GET_PROC_ADDR(vkResetFences);
-    GET_PROC_ADDR(vkDestroyFence);
+		GET_PROC_ADDR(vkCreateFence);
+		GET_PROC_ADDR(vkWaitForFences);
+		GET_PROC_ADDR(vkResetFences);
+		GET_PROC_ADDR(vkDestroyFence);
 
-    GET_PROC_ADDR(vkCreateShaderModule);
-    GET_PROC_ADDR(vkDestroyShaderModule);
+		GET_PROC_ADDR(vkCreateShaderModule);
+		GET_PROC_ADDR(vkDestroyShaderModule);
 
-    GET_PROC_ADDR(vkCreatePipelineLayout);
-    GET_PROC_ADDR(vkDestroyPipelineLayout);
+		GET_PROC_ADDR(vkCreatePipelineLayout);
+		GET_PROC_ADDR(vkDestroyPipelineLayout);
 
-    GET_PROC_ADDR(vkCreateGraphicsPipelines);
-    GET_PROC_ADDR(vkDestroyPipeline);
+		GET_PROC_ADDR(vkCreateGraphicsPipelines);
+		GET_PROC_ADDR(vkDestroyPipeline);
 
-    GET_PROC_ADDR(vkCreateBuffer);
-    GET_PROC_ADDR(vkGetBufferMemoryRequirements);
-    GET_PROC_ADDR(vkGetImageMemoryRequirements);
-    GET_PROC_ADDR(vkDestroyBuffer);
+		GET_PROC_ADDR(vkCreateBuffer);
+		GET_PROC_ADDR(vkGetBufferMemoryRequirements);
+		GET_PROC_ADDR(vkGetImageMemoryRequirements);
+		GET_PROC_ADDR(vkDestroyBuffer);
 
-    GET_PROC_ADDR(vkAllocateMemory);
-    GET_PROC_ADDR(vkBindBufferMemory);
-    GET_PROC_ADDR(vkMapMemory);
-    GET_PROC_ADDR(vkFlushMappedMemoryRanges);
-    GET_PROC_ADDR(vkUnmapMemory);
-    GET_PROC_ADDR(vkFreeMemory);
-    GET_PROC_ADDR(vkBindImageMemory);
+		GET_PROC_ADDR(vkAllocateMemory);
+		GET_PROC_ADDR(vkBindBufferMemory);
+		GET_PROC_ADDR(vkMapMemory);
+		GET_PROC_ADDR(vkFlushMappedMemoryRanges);
+		GET_PROC_ADDR(vkUnmapMemory);
+		GET_PROC_ADDR(vkFreeMemory);
+		GET_PROC_ADDR(vkBindImageMemory);
 
-    GET_PROC_ADDR(vkCreateDescriptorPool);
-    GET_PROC_ADDR(vkDestroyDescriptorPool);
+		GET_PROC_ADDR(vkCreateDescriptorPool);
+		GET_PROC_ADDR(vkDestroyDescriptorPool);
 
-    GET_PROC_ADDR(vkCreateDescriptorSetLayout);
-    GET_PROC_ADDR(vkUpdateDescriptorSets);
-    GET_PROC_ADDR(vkAllocateDescriptorSets);
-    GET_PROC_ADDR(vkDestroyDescriptorSetLayout);
+		GET_PROC_ADDR(vkCreateDescriptorSetLayout);
+		GET_PROC_ADDR(vkUpdateDescriptorSets);
+		GET_PROC_ADDR(vkAllocateDescriptorSets);
+		GET_PROC_ADDR(vkDestroyDescriptorSetLayout);
 
-    #undef GET_PROC_ADDR
-  };
+		#undef GET_PROC_ADDR
+	};
 
 
 
-  INLINE VkApplicationInfo AppI (
+	INLINE VkApplicationInfo AppI (
 
-    uint32_t    apiVersion         = VK_API_VERSION_1_2,
-    const char* pApplicationName   = nullptr,
-    uint32_t    applicationVersion = 0,
-    const char* pEngineName        = nullptr,
-    uint32_t    engineVersion      = 0,
-    const void* pNext              = nullptr
-  ) {
+		uint32_t    apiVersion         = VK_API_VERSION_1_2,
+		const char* pApplicationName   = nullptr,
+		uint32_t    applicationVersion = 0,
+		const char* pEngineName        = nullptr,
+		uint32_t    engineVersion      = 0,
+		const void* pNext              = nullptr
+	) {
 
-    VkApplicationInfo info = {
+		VkApplicationInfo info = {
 
-      VK_STRUCTURE_TYPE_APPLICATION_INFO,
-      pNext,
-      pApplicationName,
-      applicationVersion,
-      pEngineName,
-      engineVersion,
-      apiVersion
-    };
+			VK_STRUCTURE_TYPE_APPLICATION_INFO,
+			pNext,
+			pApplicationName,
+			applicationVersion,
+			pEngineName,
+			engineVersion,
+			apiVersion
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  #ifdef DEBUG
+	#ifdef DEBUG
 
-    #define DEBUG_REPORT_ARGS \
-      \
-      VkDebugReportFlagsEXT      flags,\
-      VkDebugReportObjectTypeEXT objectType,\
-      uint64_t                   object,\
-      size_t                     location,\
-      int32_t                    messageCode,\
-      const char*                pLayerPrefix,\
-      const char*                pMessage,\
-      void*                      pUserData
+		#define DEBUG_REPORT_ARGS \
+			\
+			VkDebugReportFlagsEXT      flags,\
+			VkDebugReportObjectTypeEXT objectType,\
+			uint64_t                   object,\
+			size_t                     location,\
+			int32_t                    messageCode,\
+			const char*                pLayerPrefix,\
+			const char*                pMessage,\
+			void*                      pUserData
 
-    VkBool32 reportError(DEBUG_REPORT_ARGS) {
+		VkBool32 reportError(DEBUG_REPORT_ARGS) {
 
-      printf("VALIDATION LAYER ERROR: %s\n", pMessage);
+			printf("VALIDATION LAYER ERROR: %s\n", pMessage);
 
-      return VK_FALSE;
-    };
+			return VK_FALSE;
+		};
 
-    VkBool32 reportInfo(DEBUG_REPORT_ARGS) {
+		VkBool32 reportInfo(DEBUG_REPORT_ARGS) {
 
-      printf("VALIDATION LAYER INFORMATION: %s\n", pMessage);
+			printf("VALIDATION LAYER INFORMATION: %s\n", pMessage);
 
-      return VK_FALSE;
-    };
+			return VK_FALSE;
+		};
 
-    VkBool32 reportWarn(DEBUG_REPORT_ARGS) {
+		VkBool32 reportWarn(DEBUG_REPORT_ARGS) {
 
-      printf("VALIDATION LAYER WARNING: %s\n", pMessage);
+			printf("VALIDATION LAYER WARNING: %s\n", pMessage);
 
-      return VK_FALSE;
-    };
+			return VK_FALSE;
+		};
 
-    VkBool32 reportPerf(DEBUG_REPORT_ARGS) {
+		VkBool32 reportPerf(DEBUG_REPORT_ARGS) {
 
-      printf("VALIDATION LAYER PERFORMANCE WARNING: %s\n", pMessage);
+			printf("VALIDATION LAYER PERFORMANCE WARNING: %s\n", pMessage);
 
-      return VK_FALSE;
-    };
+			return VK_FALSE;
+		};
 
-    VkBool32 reportDebug(DEBUG_REPORT_ARGS) {
+		VkBool32 reportDebug(DEBUG_REPORT_ARGS) {
 
-      printf("VALIDATION LAYER DEBUG: %s\n", pMessage);
+			printf("VALIDATION LAYER DEBUG: %s\n", pMessage);
 
-      return VK_FALSE;
-    };
+			return VK_FALSE;
+		};
 
-    #undef DEBUG_REPORT_ARGS
-  #endif
+		#undef DEBUG_REPORT_ARGS
+	#endif
 
 
 
-  struct Instance {
+	struct Instance {
 
-    VkInstance        handle                = VK_NULL_HANDLE;
-    uint32_t          physical_device_count = 0;
-    VkPhysicalDevice* physical_devices      = nullptr;
+		VkInstance        handle                = VK_NULL_HANDLE;
+		uint32_t          physical_device_count = 0;
+		VkPhysicalDevice* physical_devices      = nullptr;
 
-    std::vector<VkSurfaceKHR> surfaces;
+		std::vector<VkSurfaceKHR> surfaces;
 
-    #ifdef DEBUG
+		#ifdef DEBUG
 
-      XGK_VULKAN_MACRO_DECLARE_DEBUG_REPORT_CALLBACKS
-    #endif
+			XGK_VULKAN_MACRO_DECLARE_DEBUG_REPORT_CALLBACKS
+		#endif
 
 
 
-      VkDebugReportCallbackEXT DebugReportCallbackEXT (
+			VkDebugReportCallbackEXT DebugReportCallbackEXT (
 
-        PFN_vkDebugReportCallbackEXT pfnCallback = nullptr,
-        VkDebugReportFlagsEXT        flags       = 0,
-        void*                        pUserData   = nullptr,
-        const void*                  pNext       = nullptr,
-        const VkAllocationCallbacks* pAllocator  = nullptr
-      ) {
+				PFN_vkDebugReportCallbackEXT pfnCallback = nullptr,
+				VkDebugReportFlagsEXT        flags       = 0,
+				void*                        pUserData   = nullptr,
+				const void*                  pNext       = nullptr,
+				const VkAllocationCallbacks* pAllocator  = nullptr
+			) {
 
-        VkDebugReportCallbackCreateInfoEXT info = {
+				VkDebugReportCallbackCreateInfoEXT info = {
 
-          VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
-          pNext,
-          flags,
-          pfnCallback,
-          pUserData
-        };
+					VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
+					pNext,
+					flags,
+					pfnCallback,
+					pUserData
+				};
 
-        VkDebugReportCallbackEXT report_callback = VK_NULL_HANDLE;
+				VkDebugReportCallbackEXT report_callback = VK_NULL_HANDLE;
 
-        vkCreateDebugReportCallbackEXT(handle, &info, pAllocator, &report_callback);
+				vkCreateDebugReportCallbackEXT(handle, &info, pAllocator, &report_callback);
 
-        return report_callback;
-      };
+				return report_callback;
+			};
 
-      void enumDevs (void) {
+			void enumDevs (void) {
 
-        vkEnumeratePhysicalDevices(handle, &physical_device_count, nullptr);
-        physical_devices = new VkPhysicalDevice[physical_device_count];
-        vkEnumeratePhysicalDevices(handle, &physical_device_count, physical_devices);
-      };
+				vkEnumeratePhysicalDevices(handle, &physical_device_count, nullptr);
+				physical_devices = new VkPhysicalDevice[physical_device_count];
+				vkEnumeratePhysicalDevices(handle, &physical_device_count, physical_devices);
+			};
 
-      void create (
+			void create (
 
-        const                        VkApplicationInfo* pApplicationInfo = nullptr,
-        uint32_t                     enabledLayerCount                   = 0,
-        const char* const*           ppEnabledLayerNames                 = nullptr,
-        uint32_t                     enabledExtensionCount               = 0,
-        const char* const*           ppEnabledExtensionNames             = nullptr,
-        VkInstanceCreateFlags        flags                               = 0,
-        const void*                  pNext                               = nullptr,
-        const VkAllocationCallbacks* pAllocator                          = nullptr
-      ) {
+				const                        VkApplicationInfo* pApplicationInfo = nullptr,
+				uint32_t                     enabledLayerCount                   = 0,
+				const char* const*           ppEnabledLayerNames                 = nullptr,
+				uint32_t                     enabledExtensionCount               = 0,
+				const char* const*           ppEnabledExtensionNames             = nullptr,
+				VkInstanceCreateFlags        flags                               = 0,
+				const void*                  pNext                               = nullptr,
+				const VkAllocationCallbacks* pAllocator                          = nullptr
+			) {
 
-        VkInstanceCreateInfo info = {
+				VkInstanceCreateInfo info = {
 
-          VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-          pNext,
-          flags,
-          pApplicationInfo,
-          enabledLayerCount,
-          ppEnabledLayerNames,
-          enabledExtensionCount,
-          ppEnabledExtensionNames
-        };
+					VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+					pNext,
+					flags,
+					pApplicationInfo,
+					enabledLayerCount,
+					ppEnabledLayerNames,
+					enabledExtensionCount,
+					ppEnabledExtensionNames
+				};
 
-        loadSharedLibrary();
+				loadSharedLibrary();
 
-        loadGlobalFunctions();
+				loadGlobalFunctions();
 
-        vkCreateInstance(&info, pAllocator, &handle);
+				vkCreateInstance(&info, pAllocator, &handle);
 
-        loadInstanceFunctions(handle);
+				loadInstanceFunctions(handle);
 
-        #ifdef DEBUG
+				#ifdef DEBUG
 
-          XGK_VULKAN_MACRO_CREATE_DEBUG_REPORT_CALLBACKS(handle)
-        #endif
+					XGK_VULKAN_MACRO_CREATE_DEBUG_REPORT_CALLBACKS(handle)
+				#endif
 
-        enumDevs();
-      };
+				enumDevs();
+			};
 
-      VkSurfaceKHR SurfaceKHR (
+			VkSurfaceKHR SurfaceKHR (
 
-        #if defined(__linux__)
+				#if defined(__linux__)
 
-          Display*                     dpy        = nullptr,
-          Window                       window     = 0,
-          VkXlibSurfaceCreateFlagsKHR  flags      = 0,
-        #elif defined(_WIN64)
+					Display*                     dpy        = nullptr,
+					Window                       window     = 0,
+					VkXlibSurfaceCreateFlagsKHR  flags      = 0,
+				#elif defined(_WIN64)
 
-          HINSTANCE                    hinstance  = 0,
-          HWND                         hwnd       = 0,
-          VkWin32SurfaceCreateFlagsKHR flags      = 0,
-        #endif
+					HINSTANCE                    hinstance  = 0,
+					HWND                         hwnd       = 0,
+					VkWin32SurfaceCreateFlagsKHR flags      = 0,
+				#endif
 
-        const void*                    pNext      = nullptr,
-        const VkAllocationCallbacks*   pAllocator = nullptr
-      ) {
+				const void*                    pNext      = nullptr,
+				const VkAllocationCallbacks*   pAllocator = nullptr
+			) {
 
-        #if defined(__linux__)
+				#if defined(__linux__)
 
-          VkXlibSurfaceCreateInfoKHR info = {
+					VkXlibSurfaceCreateInfoKHR info = {
 
-            VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-            pNext,
-            flags,
-            dpy,
-            window
-          };
-        #elif defined(_WIN64)
+						VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
+						pNext,
+						flags,
+						dpy,
+						window
+					};
+				#elif defined(_WIN64)
 
-          VkWin32SurfaceCreateInfoKHR info = {
+					VkWin32SurfaceCreateInfoKHR info = {
 
-            VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-            pNext,
-            flags,
-            hinstance,
-            hwnd
-          };
-        #endif
+						VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
+						pNext,
+						flags,
+						hinstance,
+						hwnd
+					};
+				#endif
 
-        VkSurfaceKHR surface = VK_NULL_HANDLE;
+				VkSurfaceKHR surface = VK_NULL_HANDLE;
 
-        #if defined(__linux__)
+				#if defined(__linux__)
 
-          vkCreateXlibSurfaceKHR(handle, &info, pAllocator, &surface);
-        #elif defined(_WIN64)
+					vkCreateXlibSurfaceKHR(handle, &info, pAllocator, &surface);
+				#elif defined(_WIN64)
 
-          vkCreateWin32SurfaceKHR(handle, &info, pAllocator, &surface);
-        #endif
+					vkCreateWin32SurfaceKHR(handle, &info, pAllocator, &surface);
+				#endif
 
-        surfaces.push_back(surface);
+				surfaces.push_back(surface);
 
-        return surface;
-      };
+				return surface;
+			};
 
-      void destroy (void) {
+			void destroy (void) {
 
-        delete[] physical_devices;
+				delete[] physical_devices;
 
-        for (uint64_t i = 0; i < surfaces.size(); i++) {
+				for (uint64_t i = 0; i < surfaces.size(); i++) {
 
-          vkDestroySurfaceKHR(handle, surfaces[i], nullptr);
-        }
+					vkDestroySurfaceKHR(handle, surfaces[i], nullptr);
+				}
 
-        surfaces.resize(0);
+				surfaces.resize(0);
 
-        #ifdef DEBUG
+				#ifdef DEBUG
 
-          XGK_VULKAN_MACRO_DESTROY_DEBUG_REPORT_CALLBACKS(handle);
-        #endif
+					XGK_VULKAN_MACRO_DESTROY_DEBUG_REPORT_CALLBACKS(handle);
+				#endif
 
-        vkDestroyInstance(handle, nullptr);
+				vkDestroyInstance(handle, nullptr);
 
-        freeSharedLibrary();
-      };
-  };
+				freeSharedLibrary();
+			};
+	};
 
 
 
-  VkDeviceQueueCreateInfo DevQueueCI (
+	VkDeviceQueueCreateInfo DevQueueCI (
 
-    uint32_t                 queueFamilyIndex = 0,
-    uint32_t                 queueCount       = 0,
-    const float*             pQueuePriorities = nullptr,
-    VkDeviceQueueCreateFlags flags            = 0,
-    const void*              pNext            = nullptr
-  ) {
+		uint32_t                 queueFamilyIndex = 0,
+		uint32_t                 queueCount       = 0,
+		const float*             pQueuePriorities = nullptr,
+		VkDeviceQueueCreateFlags flags            = 0,
+		const void*              pNext            = nullptr
+	) {
 
-    VkDeviceQueueCreateInfo info = {
+		VkDeviceQueueCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-      pNext,
-      flags,
-      queueFamilyIndex,
-      queueCount,
-      pQueuePriorities
-    };
+			VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+			pNext,
+			flags,
+			queueFamilyIndex,
+			queueCount,
+			pQueuePriorities
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkPipelineInputAssemblyStateCreateInfo PplInputAsm (
+	VkPipelineInputAssemblyStateCreateInfo PplInputAsm (
 
-    VkPrimitiveTopology                     topology               = VK_PRIMITIVE_TOPOLOGY_POINT_LIST,
-    VkBool32                                primitiveRestartEnable = VK_FALSE,
-    VkPipelineInputAssemblyStateCreateFlags flags                  = 0,
-    const void*                             pNext                  = nullptr
-  ) {
+		VkPrimitiveTopology                     topology               = VK_PRIMITIVE_TOPOLOGY_POINT_LIST,
+		VkBool32                                primitiveRestartEnable = VK_FALSE,
+		VkPipelineInputAssemblyStateCreateFlags flags                  = 0,
+		const void*                             pNext                  = nullptr
+	) {
 
-    VkPipelineInputAssemblyStateCreateInfo info = {
+		VkPipelineInputAssemblyStateCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
-      pNext,
-      flags,
-      topology,
-      primitiveRestartEnable
-    };
+			VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+			pNext,
+			flags,
+			topology,
+			primitiveRestartEnable
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkPipelineTessellationStateCreateInfo PplTess (
+	VkPipelineTessellationStateCreateInfo PplTess (
 
-    uint32_t                               patchControlPoints = 0,
-    VkPipelineTessellationStateCreateFlags flags              = 0,
-    const void*                            pNext              = nullptr
-  ) {
+		uint32_t                               patchControlPoints = 0,
+		VkPipelineTessellationStateCreateFlags flags              = 0,
+		const void*                            pNext              = nullptr
+	) {
 
-    VkPipelineTessellationStateCreateInfo info = {
+		VkPipelineTessellationStateCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
-      pNext,
-      flags,
-      patchControlPoints
-    };
+			VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
+			pNext,
+			flags,
+			patchControlPoints
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkPipelineViewportStateCreateInfo PplView (
+	VkPipelineViewportStateCreateInfo PplView (
 
-    uint32_t                           viewportCount = 0,
-    const VkViewport*                  pViewports    = nullptr,
-    uint32_t                           scissorCount  = 0,
-    const VkRect2D*                    pScissors     = nullptr,
-    VkPipelineViewportStateCreateFlags flags         = 0,
-    const void*                        pNext         = nullptr
-  ) {
+		uint32_t                           viewportCount = 0,
+		const VkViewport*                  pViewports    = nullptr,
+		uint32_t                           scissorCount  = 0,
+		const VkRect2D*                    pScissors     = nullptr,
+		VkPipelineViewportStateCreateFlags flags         = 0,
+		const void*                        pNext         = nullptr
+	) {
 
-    VkPipelineViewportStateCreateInfo info = {
+		VkPipelineViewportStateCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
-      pNext,
-      flags,
-      viewportCount,
-      pViewports,
-      scissorCount,
-      pScissors
-    };
+			VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+			pNext,
+			flags,
+			viewportCount,
+			pViewports,
+			scissorCount,
+			pScissors
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkPipelineMultisampleStateCreateInfo PplSample (
+	VkPipelineMultisampleStateCreateInfo PplSample (
 
-    VkSampleCountFlagBits                 rasterizationSamples  = VK_SAMPLE_COUNT_1_BIT,
-    VkBool32                              sampleShadingEnable   = VK_FALSE,
-    float                                 minSampleShading      = 0.0f,
-    const VkSampleMask*                   pSampleMask           = nullptr,
-    VkBool32                              alphaToCoverageEnable = VK_FALSE,
-    VkBool32                              alphaToOneEnable      = VK_FALSE,
-    VkPipelineMultisampleStateCreateFlags flags                 = 0,
-    const void*                           pNext                 = nullptr
-  ) {
+		VkSampleCountFlagBits                 rasterizationSamples  = VK_SAMPLE_COUNT_1_BIT,
+		VkBool32                              sampleShadingEnable   = VK_FALSE,
+		float                                 minSampleShading      = 0.0f,
+		const VkSampleMask*                   pSampleMask           = nullptr,
+		VkBool32                              alphaToCoverageEnable = VK_FALSE,
+		VkBool32                              alphaToOneEnable      = VK_FALSE,
+		VkPipelineMultisampleStateCreateFlags flags                 = 0,
+		const void*                           pNext                 = nullptr
+	) {
 
-    VkPipelineMultisampleStateCreateInfo info = {
+		VkPipelineMultisampleStateCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
-      pNext,
-      flags,
-      rasterizationSamples,
-      sampleShadingEnable,
-      minSampleShading,
-      pSampleMask,
-      alphaToCoverageEnable,
-      alphaToOneEnable,
-    };
+			VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+			pNext,
+			flags,
+			rasterizationSamples,
+			sampleShadingEnable,
+			minSampleShading,
+			pSampleMask,
+			alphaToCoverageEnable,
+			alphaToOneEnable,
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkPipelineRasterizationStateCreateInfo PplRast (
+	VkPipelineRasterizationStateCreateInfo PplRast (
 
-    VkBool32                                depthClampEnable        = VK_FALSE,
-    VkBool32                                rasterizerDiscardEnable = VK_FALSE,
-    VkPolygonMode                           polygonMode             = VK_POLYGON_MODE_FILL,
-    VkCullModeFlags                         cullMode                = VK_CULL_MODE_NONE,
-    VkFrontFace                             frontFace               = VK_FRONT_FACE_COUNTER_CLOCKWISE,
-    VkBool32                                depthBiasEnable         = VK_FALSE,
-    float                                   depthBiasConstantFactor = 0.0f,
-    float                                   depthBiasClamp          = 0.0f,
-    float                                   depthBiasSlopeFactor    = 0.0f,
-    float                                   lineWidth               = 1.0f,
-    VkPipelineRasterizationStateCreateFlags flags                   = 0,
-    const void*                             pNext                   = nullptr
-  ) {
+		VkBool32                                depthClampEnable        = VK_FALSE,
+		VkBool32                                rasterizerDiscardEnable = VK_FALSE,
+		VkPolygonMode                           polygonMode             = VK_POLYGON_MODE_FILL,
+		VkCullModeFlags                         cullMode                = VK_CULL_MODE_NONE,
+		VkFrontFace                             frontFace               = VK_FRONT_FACE_COUNTER_CLOCKWISE,
+		VkBool32                                depthBiasEnable         = VK_FALSE,
+		float                                   depthBiasConstantFactor = 0.0f,
+		float                                   depthBiasClamp          = 0.0f,
+		float                                   depthBiasSlopeFactor    = 0.0f,
+		float                                   lineWidth               = 1.0f,
+		VkPipelineRasterizationStateCreateFlags flags                   = 0,
+		const void*                             pNext                   = nullptr
+	) {
 
-    VkPipelineRasterizationStateCreateInfo info = {
+		VkPipelineRasterizationStateCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
-      pNext,
-      flags,
-      depthClampEnable,
-      rasterizerDiscardEnable,
-      polygonMode,
-      cullMode,
-      frontFace,
-      depthBiasEnable,
-      depthBiasConstantFactor,
-      depthBiasClamp,
-      depthBiasSlopeFactor,
-      lineWidth
-    };
+			VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+			pNext,
+			flags,
+			depthClampEnable,
+			rasterizerDiscardEnable,
+			polygonMode,
+			cullMode,
+			frontFace,
+			depthBiasEnable,
+			depthBiasConstantFactor,
+			depthBiasClamp,
+			depthBiasSlopeFactor,
+			lineWidth
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkPipelineDepthStencilStateCreateInfo PplDepthStenc (
+	VkPipelineDepthStencilStateCreateInfo PplDepthStenc (
 
-    VkBool32                               depthTestEnable       = VK_FALSE,
-    VkBool32                               depthWriteEnable      = VK_FALSE,
-    VkCompareOp                            depthCompareOp        = VK_COMPARE_OP_NEVER,
-    VkBool32                               depthBoundsTestEnable = VK_FALSE,
-    VkBool32                               stencilTestEnable     = VK_FALSE,
-    VkStencilOpState                       front                 = {},
-    VkStencilOpState                       back                  = {},
-    float                                  minDepthBounds        = 0.0f,
-    float                                  maxDepthBounds        = 0.0f,
-    VkPipelineDepthStencilStateCreateFlags flags                 = 0,
-    const void*                            pNext                 = nullptr
-  ) {
+		VkBool32                               depthTestEnable       = VK_FALSE,
+		VkBool32                               depthWriteEnable      = VK_FALSE,
+		VkCompareOp                            depthCompareOp        = VK_COMPARE_OP_NEVER,
+		VkBool32                               depthBoundsTestEnable = VK_FALSE,
+		VkBool32                               stencilTestEnable     = VK_FALSE,
+		VkStencilOpState                       front                 = {},
+		VkStencilOpState                       back                  = {},
+		float                                  minDepthBounds        = 0.0f,
+		float                                  maxDepthBounds        = 0.0f,
+		VkPipelineDepthStencilStateCreateFlags flags                 = 0,
+		const void*                            pNext                 = nullptr
+	) {
 
-    VkPipelineDepthStencilStateCreateInfo info = {
+		VkPipelineDepthStencilStateCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
-      pNext,
-      flags,
-      depthTestEnable,
-      depthWriteEnable,
-      depthCompareOp,
-      depthBoundsTestEnable,
-      stencilTestEnable,
-      front,
-      back,
-      minDepthBounds,
-      maxDepthBounds
-    };
+			VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+			pNext,
+			flags,
+			depthTestEnable,
+			depthWriteEnable,
+			depthCompareOp,
+			depthBoundsTestEnable,
+			stencilTestEnable,
+			front,
+			back,
+			minDepthBounds,
+			maxDepthBounds
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkPipelineColorBlendStateCreateInfo PplBlend (
+	VkPipelineColorBlendStateCreateInfo PplBlend (
 
-    VkBool32                                   logicOpEnable    = VK_FALSE,
-    VkLogicOp                                  logicOp          = VK_LOGIC_OP_CLEAR,
-    uint32_t                                   attachmentCount  = 0,
-    const VkPipelineColorBlendAttachmentState* pAttachments     = nullptr,
-    float                                      blendConstants_0 = 0.0f,
-    float                                      blendConstants_1 = 0.0f,
-    float                                      blendConstants_2 = 0.0f,
-    float                                      blendConstants_3 = 0.0f,
-    VkPipelineColorBlendStateCreateFlags       flags            = 0,
-    const void*                                pNext            = nullptr
-  ) {
+		VkBool32                                   logicOpEnable    = VK_FALSE,
+		VkLogicOp                                  logicOp          = VK_LOGIC_OP_CLEAR,
+		uint32_t                                   attachmentCount  = 0,
+		const VkPipelineColorBlendAttachmentState* pAttachments     = nullptr,
+		float                                      blendConstants_0 = 0.0f,
+		float                                      blendConstants_1 = 0.0f,
+		float                                      blendConstants_2 = 0.0f,
+		float                                      blendConstants_3 = 0.0f,
+		VkPipelineColorBlendStateCreateFlags       flags            = 0,
+		const void*                                pNext            = nullptr
+	) {
 
-    VkPipelineColorBlendStateCreateInfo info = {
+		VkPipelineColorBlendStateCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-      pNext,
-      flags,
-      logicOpEnable,
-      logicOp,
-      attachmentCount,
-      pAttachments,
-      blendConstants_0,
-      blendConstants_1,
-      blendConstants_2,
-      blendConstants_3
-    };
+			VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+			pNext,
+			flags,
+			logicOpEnable,
+			logicOp,
+			attachmentCount,
+			pAttachments,
+			blendConstants_0,
+			blendConstants_1,
+			blendConstants_2,
+			blendConstants_3
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkPipelineDynamicStateCreateInfo PplDyn (
+	VkPipelineDynamicStateCreateInfo PplDyn (
 
-    uint32_t                          dynamicStateCount = 0,
-    const VkDynamicState*             pDynamicStates    = nullptr,
-    VkPipelineDynamicStateCreateFlags flags             = 0,
-    const void*                       pNext             = nullptr
-  ) {
+		uint32_t                          dynamicStateCount = 0,
+		const VkDynamicState*             pDynamicStates    = nullptr,
+		VkPipelineDynamicStateCreateFlags flags             = 0,
+		const void*                       pNext             = nullptr
+	) {
 
-    VkPipelineDynamicStateCreateInfo info = {
+		VkPipelineDynamicStateCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
-      pNext,
-      flags,
-      dynamicStateCount,
-      pDynamicStates
-    };
+			VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+			pNext,
+			flags,
+			dynamicStateCount,
+			pDynamicStates
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkPipelineShaderStageCreateInfo PplShader (
+	VkPipelineShaderStageCreateInfo PplShader (
 
-    VkShaderStageFlagBits            stage               = VK_SHADER_STAGE_VERTEX_BIT,
-    VkShaderModule                   module              = VK_NULL_HANDLE,
-    const char*                      pName               = "main",
-    const VkSpecializationInfo*      pSpecializationInfo = nullptr,
-    VkPipelineShaderStageCreateFlags flags               = 0,
-    const void*                      pNext               = nullptr
-  ) {
+		VkShaderStageFlagBits            stage               = VK_SHADER_STAGE_VERTEX_BIT,
+		VkShaderModule                   module              = VK_NULL_HANDLE,
+		const char*                      pName               = "main",
+		const VkSpecializationInfo*      pSpecializationInfo = nullptr,
+		VkPipelineShaderStageCreateFlags flags               = 0,
+		const void*                      pNext               = nullptr
+	) {
 
-    VkPipelineShaderStageCreateInfo info = {
+		VkPipelineShaderStageCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-      pNext,
-      flags,
-      stage,
-      module,
-      pName,
-      pSpecializationInfo
-    };
+			VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+			pNext,
+			flags,
+			stage,
+			module,
+			pName,
+			pSpecializationInfo
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkPipelineVertexInputStateCreateInfo PplVertex (
+	VkPipelineVertexInputStateCreateInfo PplVertex (
 
-    uint32_t                                 vertexBindingDescriptionCount   = 0,
-    const VkVertexInputBindingDescription*   pVertexBindingDescriptions      = nullptr,
-    uint32_t                                 vertexAttributeDescriptionCount = 0,
-    const VkVertexInputAttributeDescription* pVertexAttributeDescriptions    = nullptr,
-    VkPipelineVertexInputStateCreateFlags    flags                           = 0,
-    const void*                              pNext                           = nullptr
-  ) {
+		uint32_t                                 vertexBindingDescriptionCount   = 0,
+		const VkVertexInputBindingDescription*   pVertexBindingDescriptions      = nullptr,
+		uint32_t                                 vertexAttributeDescriptionCount = 0,
+		const VkVertexInputAttributeDescription* pVertexAttributeDescriptions    = nullptr,
+		VkPipelineVertexInputStateCreateFlags    flags                           = 0,
+		const void*                              pNext                           = nullptr
+	) {
 
-    VkPipelineVertexInputStateCreateInfo info = {
+		VkPipelineVertexInputStateCreateInfo info = {
 
-      VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-      pNext,
-      flags,
-      vertexBindingDescriptionCount,
-      pVertexBindingDescriptions,
-      vertexAttributeDescriptionCount,
-      pVertexAttributeDescriptions
-    };
+			VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+			pNext,
+			flags,
+			vertexBindingDescriptionCount,
+			pVertexBindingDescriptions,
+			vertexAttributeDescriptionCount,
+			pVertexAttributeDescriptions
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  VkWriteDescriptorSet WriteDescrSet (
+	VkWriteDescriptorSet WriteDescrSet (
 
-    VkDescriptorSet               dstSet           = VK_NULL_HANDLE,
-    uint32_t                      dstBinding       = 0,
-    uint32_t                      dstArrayElement  = 0,
-    uint32_t                      descriptorCount  = 0,
-    VkDescriptorType              descriptorType   = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-    const VkDescriptorImageInfo*  pImageInfo       = nullptr,
-    const VkDescriptorBufferInfo* pBufferInfo      = nullptr,
-    const VkBufferView*           pTexelBufferView = nullptr,
-    const void*                   pNext            = nullptr
-  ) {
+		VkDescriptorSet               dstSet           = VK_NULL_HANDLE,
+		uint32_t                      dstBinding       = 0,
+		uint32_t                      dstArrayElement  = 0,
+		uint32_t                      descriptorCount  = 0,
+		VkDescriptorType              descriptorType   = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+		const VkDescriptorImageInfo*  pImageInfo       = nullptr,
+		const VkDescriptorBufferInfo* pBufferInfo      = nullptr,
+		const VkBufferView*           pTexelBufferView = nullptr,
+		const void*                   pNext            = nullptr
+	) {
 
-    VkWriteDescriptorSet info = {
+		VkWriteDescriptorSet info = {
 
-      VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-      pNext,
-      dstSet,
-      dstBinding,
-      dstArrayElement,
-      descriptorCount,
-      descriptorType,
-      pImageInfo,
-      pBufferInfo,
-      pTexelBufferView
-    };
+			VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+			pNext,
+			dstSet,
+			dstBinding,
+			dstArrayElement,
+			descriptorCount,
+			descriptorType,
+			pImageInfo,
+			pBufferInfo,
+			pTexelBufferView
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  INLINE VkCommandBufferBeginInfo CmdBufferBeginI (
+	INLINE VkCommandBufferBeginInfo CmdBufferBeginI (
 
-    const VkCommandBufferInheritanceInfo* pInheritanceInfo = nullptr,
-    VkCommandBufferUsageFlags             flags            = 0,
-    const void*                           pNext            = nullptr
-  ) {
+		const VkCommandBufferInheritanceInfo* pInheritanceInfo = nullptr,
+		VkCommandBufferUsageFlags             flags            = 0,
+		const void*                           pNext            = nullptr
+	) {
 
-    VkCommandBufferBeginInfo info = {
+		VkCommandBufferBeginInfo info = {
 
-      VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-      pNext,
-      flags,
-      pInheritanceInfo
-    };
+			VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+			pNext,
+			flags,
+			pInheritanceInfo
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  INLINE VkRenderPassBeginInfo RenderPassBeginI (
+	INLINE VkRenderPassBeginInfo RenderPassBeginI (
 
-    VkRenderPass        renderPass      = VK_NULL_HANDLE,
-    VkFramebuffer       framebuffer     = VK_NULL_HANDLE,
-    VkRect2D            renderArea      = { 0 },
-    uint32_t            clearValueCount = 0,
-    const VkClearValue* pClearValues    = nullptr,
-    const void*         pNext           = nullptr
-  ) {
+		VkRenderPass        renderPass      = VK_NULL_HANDLE,
+		VkFramebuffer       framebuffer     = VK_NULL_HANDLE,
+		VkRect2D            renderArea      = { 0 },
+		uint32_t            clearValueCount = 0,
+		const VkClearValue* pClearValues    = nullptr,
+		const void*         pNext           = nullptr
+	) {
 
-    VkRenderPassBeginInfo info = {
+		VkRenderPassBeginInfo info = {
 
-      VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-      pNext,
-      renderPass,
-      framebuffer,
-      renderArea,
-      clearValueCount,
-      pClearValues
-    };
+			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+			pNext,
+			renderPass,
+			framebuffer,
+			renderArea,
+			clearValueCount,
+			pClearValues
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  INLINE VkSubmitInfo SubmitI (
+	INLINE VkSubmitInfo SubmitI (
 
-    uint32_t                    waitSemaphoreCount   = 0,
-    const VkSemaphore*          pWaitSemaphores      = nullptr,
-    const VkPipelineStageFlags* pWaitDstStageMask    = nullptr,
-    uint32_t                    commandBufferCount   = 0,
-    const VkCommandBuffer*      pCommandBuffers      = nullptr,
-    uint32_t                    signalSemaphoreCount = 0,
-    const VkSemaphore*          pSignalSemaphores    = nullptr,
-    const void*                 pNext                = nullptr
-  ) {
+		uint32_t                    waitSemaphoreCount   = 0,
+		const VkSemaphore*          pWaitSemaphores      = nullptr,
+		const VkPipelineStageFlags* pWaitDstStageMask    = nullptr,
+		uint32_t                    commandBufferCount   = 0,
+		const VkCommandBuffer*      pCommandBuffers      = nullptr,
+		uint32_t                    signalSemaphoreCount = 0,
+		const VkSemaphore*          pSignalSemaphores    = nullptr,
+		const void*                 pNext                = nullptr
+	) {
 
-    VkSubmitInfo info = {
+		VkSubmitInfo info = {
 
-      VK_STRUCTURE_TYPE_SUBMIT_INFO,
-      pNext,
-      waitSemaphoreCount,
-      pWaitSemaphores,
-      pWaitDstStageMask,
-      commandBufferCount,
-      pCommandBuffers,
-      signalSemaphoreCount,
-      pSignalSemaphores
-    };
+			VK_STRUCTURE_TYPE_SUBMIT_INFO,
+			pNext,
+			waitSemaphoreCount,
+			pWaitSemaphores,
+			pWaitDstStageMask,
+			commandBufferCount,
+			pCommandBuffers,
+			signalSemaphoreCount,
+			pSignalSemaphores
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  INLINE VkPresentInfoKHR PresentI (
+	INLINE VkPresentInfoKHR PresentI (
 
-    uint32_t              waitSemaphoreCount = 0,
-    const VkSemaphore*    pWaitSemaphores    = nullptr,
-    uint32_t              swapchainCount     = 0,
-    const VkSwapchainKHR* pSwapchains        = nullptr,
-    const uint32_t*       pImageIndices      = nullptr,
-    VkResult*             pResults           = nullptr,
-    const void*           pNext              = nullptr
-  ) {
+		uint32_t              waitSemaphoreCount = 0,
+		const VkSemaphore*    pWaitSemaphores    = nullptr,
+		uint32_t              swapchainCount     = 0,
+		const VkSwapchainKHR* pSwapchains        = nullptr,
+		const uint32_t*       pImageIndices      = nullptr,
+		VkResult*             pResults           = nullptr,
+		const void*           pNext              = nullptr
+	) {
 
-    VkPresentInfoKHR info = {
+		VkPresentInfoKHR info = {
 
-      VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-      pNext,
-      waitSemaphoreCount,
-      pWaitSemaphores,
-      swapchainCount,
-      pSwapchains,
-      pImageIndices,
-      pResults
-    };
+			VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+			pNext,
+			waitSemaphoreCount,
+			pWaitSemaphores,
+			swapchainCount,
+			pSwapchains,
+			pImageIndices,
+			pResults
+		};
 
-    return info;
-  };
+		return info;
+	};
 
 
 
-  struct Device {
+	struct Device {
 
-    VkDevice                         handle                      = VK_NULL_HANDLE;
-    uint32_t                         queue_family_prop_count     = 0;
-    VkQueueFamilyProperties*         queue_family_props          = nullptr;
-    uint32_t                         surface_format_count        = 0;
-    VkSurfaceFormatKHR*              surface_formats             = nullptr;
-    VkPhysicalDeviceMemoryProperties mem_props                   = { 0 };
-    VkSurfaceCapabilitiesKHR         surface_capabilities        = { 0 };
-    uint32_t                         graphics_queue_family_index = -1;
-    uint64_t                         graphics_queue_count        = 0;
-    uint32_t                         present_queue_family_index  = -1;
-    uint64_t                         present_queue_count         = 0;
+		VkDevice                         handle                      = VK_NULL_HANDLE;
+		uint32_t                         queue_family_prop_count     = 0;
+		VkQueueFamilyProperties*         queue_family_props          = nullptr;
+		uint32_t                         surface_format_count        = 0;
+		VkSurfaceFormatKHR*              surface_formats             = nullptr;
+		VkPhysicalDeviceMemoryProperties mem_props                   = { 0 };
+		VkSurfaceCapabilitiesKHR         surface_capabilities        = { 0 };
+		uint32_t                         graphics_queue_family_index = -1;
+		uint64_t                         graphics_queue_count        = 0;
+		uint32_t                         present_queue_family_index  = -1;
+		uint64_t                         present_queue_count         = 0;
 
-    std::vector<VkRenderPass> render_passes;
-    std::vector<VkSwapchainKHR> swapchains;
-    std::vector<VkImageView> image_views;
-    std::vector<VkImage> images;
-    std::vector<VkDeviceMemory> memories;
-    std::vector<VkFramebuffer> framebuffers;
-    std::vector<VkFence> fences;
-    std::vector<VkSemaphore> semaphores;
-    std::vector<VkBuffer> buffers;
-    std::vector<VkDescriptorSetLayout> descr_set_layouts;
-    std::vector<VkPipelineLayout> ppl_layouts;
-    std::vector<VkDescriptorPool> descr_pools;
-    std::vector<VkShaderModule> shader_modules;
-    std::vector<VkPipeline> pipelines;
-    std::vector<VkCommandPool> cmd_pools;
+		std::vector<VkRenderPass> render_passes;
+		std::vector<VkSwapchainKHR> swapchains;
+		std::vector<VkImageView> image_views;
+		std::vector<VkImage> images;
+		std::vector<VkDeviceMemory> memories;
+		std::vector<VkFramebuffer> framebuffers;
+		std::vector<VkFence> fences;
+		std::vector<VkSemaphore> semaphores;
+		std::vector<VkBuffer> buffers;
+		std::vector<VkDescriptorSetLayout> descr_set_layouts;
+		std::vector<VkPipelineLayout> ppl_layouts;
+		std::vector<VkDescriptorPool> descr_pools;
+		std::vector<VkShaderModule> shader_modules;
+		std::vector<VkPipeline> pipelines;
+		std::vector<VkCommandPool> cmd_pools;
 
 
 
-    void getProps (VkPhysicalDevice physical_device, VkSurfaceKHR surface) {
+		void getProps (VkPhysicalDevice physical_device, VkSurfaceKHR surface) {
 
-      vkGetPhysicalDeviceQueueFamilyProperties(physical_device, &queue_family_prop_count, nullptr);
-      queue_family_props = new VkQueueFamilyProperties[queue_family_prop_count];
-      vkGetPhysicalDeviceQueueFamilyProperties(physical_device, &queue_family_prop_count, queue_family_props);
+			vkGetPhysicalDeviceQueueFamilyProperties(physical_device, &queue_family_prop_count, nullptr);
+			queue_family_props = new VkQueueFamilyProperties[queue_family_prop_count];
+			vkGetPhysicalDeviceQueueFamilyProperties(physical_device, &queue_family_prop_count, queue_family_props);
 
-      vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &surface_format_count, nullptr);
-      surface_formats = new VkSurfaceFormatKHR[surface_format_count];
-      vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &surface_format_count, surface_formats);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &surface_format_count, nullptr);
+			surface_formats = new VkSurfaceFormatKHR[surface_format_count];
+			vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &surface_format_count, surface_formats);
 
-      vkGetPhysicalDeviceMemoryProperties(physical_device, &mem_props);
+			vkGetPhysicalDeviceMemoryProperties(physical_device, &mem_props);
 
-      // for (uint64_t i = 0; i < mem_props.memoryTypeCount; i++) {
+			// for (uint64_t i = 0; i < mem_props.memoryTypeCount; i++) {
 
-      //   VkMemoryType type = mem_props.memoryTypes[i];
+			//   VkMemoryType type = mem_props.memoryTypes[i];
 
-      //   std::cout << "heap index: " << type.heapIndex << std::endl;
+			//   std::cout << "heap index: " << type.heapIndex << std::endl;
 
-      //   if (type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT || 0) {
+			//   if (type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT || 0) {
 
-      //     std::cout << "  device local" << std::endl;
-      //   }
+			//     std::cout << "  device local" << std::endl;
+			//   }
 
-      //   if (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT || 0) {
+			//   if (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT || 0) {
 
-      //     std::cout << "  host visible" << std::endl;
-      //   }
+			//     std::cout << "  host visible" << std::endl;
+			//   }
 
-      //   if (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT || 0) {
+			//   if (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT || 0) {
 
-      //     std::cout << "  host coherent" << std::endl;
-      //   }
+			//     std::cout << "  host coherent" << std::endl;
+			//   }
 
-      //   if (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_CACHED_BIT || 0) {
+			//   if (type.propertyFlags & VK_MEMORY_PROPERTY_HOST_CACHED_BIT || 0) {
 
-      //     std::cout << "  host cached" << std::endl;
-      //   }
+			//     std::cout << "  host cached" << std::endl;
+			//   }
 
-      //   if ((type.propertyFlags & VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT || 0)) {
+			//   if ((type.propertyFlags & VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT || 0)) {
 
-      //     std::cout << "  lazily allocated" << std::endl;
-      //   }
+			//     std::cout << "  lazily allocated" << std::endl;
+			//   }
 
-      //   if (type.propertyFlags & VK_MEMORY_PROPERTY_PROTECTED_BIT || 0) {
+			//   if (type.propertyFlags & VK_MEMORY_PROPERTY_PROTECTED_BIT || 0) {
 
-      //     std::cout << "  protected" << std::endl;
-      //   }
+			//     std::cout << "  protected" << std::endl;
+			//   }
 
-      //   if (type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD || 0) {
+			//   if (type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD || 0) {
 
-      //     std::cout << "  device coherent AMD" << std::endl;
-      //   }
+			//     std::cout << "  device coherent AMD" << std::endl;
+			//   }
 
-      //   if (type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD || 0) {
+			//   if (type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD || 0) {
 
-      //     std::cout << "  device uncached AMD" << std::endl;
-      //   }
+			//     std::cout << "  device uncached AMD" << std::endl;
+			//   }
 
-      //   std::cout << std::endl << std::endl;
-      // }
+			//   std::cout << std::endl << std::endl;
+			// }
 
-      // std::cout << std::endl << std::endl;
+			// std::cout << std::endl << std::endl;
 
-      // for (uint64_t i = 0; i < mem_props.memoryHeapCount; i++) {
+			// for (uint64_t i = 0; i < mem_props.memoryHeapCount; i++) {
 
-      //   VkMemoryHeap heap = mem_props.memoryHeaps[i];
+			//   VkMemoryHeap heap = mem_props.memoryHeaps[i];
 
-      //   std::cout << "heap size: " << heap.size << std::endl;
+			//   std::cout << "heap size: " << heap.size << std::endl;
 
-      //   if (heap.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT || 0) {
+			//   if (heap.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT || 0) {
 
-      //     std::cout << "  device local" << std::endl;
-      //   }
+			//     std::cout << "  device local" << std::endl;
+			//   }
 
-      //   if (heap.flags & VK_MEMORY_HEAP_MULTI_INSTANCE_BIT || 0) {
+			//   if (heap.flags & VK_MEMORY_HEAP_MULTI_INSTANCE_BIT || 0) {
 
-      //     std::cout << "  multi instance" << std::endl;
-      //   }
+			//     std::cout << "  multi instance" << std::endl;
+			//   }
 
-      //   if (heap.flags & VK_MEMORY_HEAP_MULTI_INSTANCE_BIT_KHR || 0) {
+			//   if (heap.flags & VK_MEMORY_HEAP_MULTI_INSTANCE_BIT_KHR || 0) {
 
-      //     std::cout << "  multi instance KHR" << std::endl;
-      //   }
+			//     std::cout << "  multi instance KHR" << std::endl;
+			//   }
 
-      //   std::cout << std::endl << std::endl;
-      // }
+			//   std::cout << std::endl << std::endl;
+			// }
 
-      vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, surface, &surface_capabilities);
+			vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, surface, &surface_capabilities);
 
-      // std::cout << surface_capabilities.minImageCount << std::endl;
-      // std::cout << surface_capabilities.maxImageCount << std::endl;
-      // std::cout << surface_capabilities.currentExtent.width << " " << surface_capabilities.currentExtent.height << std::endl;
-      // std::cout << surface_capabilities.minImageExtent.width << " " << surface_capabilities.minImageExtent.height << std::endl;
-      // std::cout << surface_capabilities.maxImageExtent.width << " " << surface_capabilities.maxImageExtent.height << std::endl;
+			// std::cout << surface_capabilities.minImageCount << std::endl;
+			// std::cout << surface_capabilities.maxImageCount << std::endl;
+			// std::cout << surface_capabilities.currentExtent.width << " " << surface_capabilities.currentExtent.height << std::endl;
+			// std::cout << surface_capabilities.minImageExtent.width << " " << surface_capabilities.minImageExtent.height << std::endl;
+			// std::cout << surface_capabilities.maxImageExtent.width << " " << surface_capabilities.maxImageExtent.height << std::endl;
 
 
-      // std::cout << "queue family properties count: " << queue_family_prop_count << std::endl;
-      // std::cout << std::endl << std::endl;
+			// std::cout << "queue family properties count: " << queue_family_prop_count << std::endl;
+			// std::cout << std::endl << std::endl;
 
-      for (uint64_t i = 0; i < queue_family_prop_count; i++) {
+			for (uint64_t i = 0; i < queue_family_prop_count; i++) {
 
-        VkBool32 surface_support = VK_FALSE;
+				VkBool32 surface_support = VK_FALSE;
 
-        vkGetPhysicalDeviceSurfaceSupportKHR(physical_device, i, surface, &surface_support);
+				vkGetPhysicalDeviceSurfaceSupportKHR(physical_device, i, surface, &surface_support);
 
-        if (queue_family_props[i].queueFlags & VK_QUEUE_GRAPHICS_BIT || 0) {
+				if (queue_family_props[i].queueFlags & VK_QUEUE_GRAPHICS_BIT || 0) {
 
-          graphics_queue_family_index = i;
-          graphics_queue_count = queue_family_props[i].queueCount;
-        }
+					graphics_queue_family_index = i;
+					graphics_queue_count = queue_family_props[i].queueCount;
+				}
 
-        if (surface_support) {
+				if (surface_support) {
 
-          present_queue_family_index = i;
-          present_queue_count = queue_family_props[i].queueCount;
-        }
+					present_queue_family_index = i;
+					present_queue_count = queue_family_props[i].queueCount;
+				}
 
-        // std::cout << "queue family index: " << i << std::endl;
-        // std::cout << std::endl;
-        // std::cout << "graphics: " << (queue_family_props[i].queueFlags & VK_QUEUE_GRAPHICS_BIT || 0) << std::endl;
-        // std::cout << "compute: " << (queue_family_props[i].queueFlags & VK_QUEUE_COMPUTE_BIT || 0) << std::endl;
-        // std::cout << "transfer: " << (queue_family_props[i].queueFlags & VK_QUEUE_TRANSFER_BIT || 0) << std::endl;
-        // std::cout << "sparse binding: " << (queue_family_props[i].queueFlags & VK_QUEUE_SPARSE_BINDING_BIT || 0) << std::endl;
-        // std::cout << "protected: " << (queue_family_props[i].queueFlags & VK_QUEUE_PROTECTED_BIT || 0) << std::endl;
-        // std::cout << "all: " << (queue_family_props[i].queueFlags & VK_QUEUE_FLAG_BITS_MAX_ENUM || 0) << std::endl;
-        // std::cout << std::endl;
-        // std::cout << "queue count: " << queue_family_props[i].queueCount << std::endl;
-        // std::cout << "timestamp valid bits: " << queue_family_props[i].timestampValidBits << std::endl;
-        // // std::cout << queue_family_props[i].minImageTransferGranularity << std::endl;
-        // std::cout << "presentation support: " << surface_support << std::endl;
-        // std::cout << std::endl << std::endl;
-      }
+				// std::cout << "queue family index: " << i << std::endl;
+				// std::cout << std::endl;
+				// std::cout << "graphics: " << (queue_family_props[i].queueFlags & VK_QUEUE_GRAPHICS_BIT || 0) << std::endl;
+				// std::cout << "compute: " << (queue_family_props[i].queueFlags & VK_QUEUE_COMPUTE_BIT || 0) << std::endl;
+				// std::cout << "transfer: " << (queue_family_props[i].queueFlags & VK_QUEUE_TRANSFER_BIT || 0) << std::endl;
+				// std::cout << "sparse binding: " << (queue_family_props[i].queueFlags & VK_QUEUE_SPARSE_BINDING_BIT || 0) << std::endl;
+				// std::cout << "protected: " << (queue_family_props[i].queueFlags & VK_QUEUE_PROTECTED_BIT || 0) << std::endl;
+				// std::cout << "all: " << (queue_family_props[i].queueFlags & VK_QUEUE_FLAG_BITS_MAX_ENUM || 0) << std::endl;
+				// std::cout << std::endl;
+				// std::cout << "queue count: " << queue_family_props[i].queueCount << std::endl;
+				// std::cout << "timestamp valid bits: " << queue_family_props[i].timestampValidBits << std::endl;
+				// // std::cout << queue_family_props[i].minImageTransferGranularity << std::endl;
+				// std::cout << "presentation support: " << surface_support << std::endl;
+				// std::cout << std::endl << std::endl;
+			}
 
-      // throw "";
-    };
+			// throw "";
+		};
 
-    void create (
+		void create (
 
-      VkPhysicalDevice                physical_device,
-      uint32_t                        queueCreateInfoCount    = 0,
-      const VkDeviceQueueCreateInfo*  pQueueCreateInfos       = nullptr,
-      uint32_t                        enabledLayerCount       = 0,
-      const char* const*              ppEnabledLayerNames     = nullptr,
-      uint32_t                        enabledExtensionCount   = 0,
-      const char* const*              ppEnabledExtensionNames = nullptr,
-      const VkPhysicalDeviceFeatures* pEnabledFeatures        = nullptr,
-      VkDeviceCreateFlags             flags                   = 0,
-      const void*                     pNext                   = nullptr,
-      const VkAllocationCallbacks*    pAllocator              = nullptr
-    ) {
+			VkPhysicalDevice                physical_device,
+			uint32_t                        queueCreateInfoCount    = 0,
+			const VkDeviceQueueCreateInfo*  pQueueCreateInfos       = nullptr,
+			uint32_t                        enabledLayerCount       = 0,
+			const char* const*              ppEnabledLayerNames     = nullptr,
+			uint32_t                        enabledExtensionCount   = 0,
+			const char* const*              ppEnabledExtensionNames = nullptr,
+			const VkPhysicalDeviceFeatures* pEnabledFeatures        = nullptr,
+			VkDeviceCreateFlags             flags                   = 0,
+			const void*                     pNext                   = nullptr,
+			const VkAllocationCallbacks*    pAllocator              = nullptr
+		) {
 
-      VkDeviceCreateInfo info = {
+			VkDeviceCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-        pNext,
-        flags,
-        queueCreateInfoCount,
-        pQueueCreateInfos,
-        enabledLayerCount,
-        ppEnabledLayerNames,
-        enabledExtensionCount,
-        ppEnabledExtensionNames,
-        pEnabledFeatures
-      };
+				VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+				pNext,
+				flags,
+				queueCreateInfoCount,
+				pQueueCreateInfos,
+				enabledLayerCount,
+				ppEnabledLayerNames,
+				enabledExtensionCount,
+				ppEnabledExtensionNames,
+				pEnabledFeatures
+			};
 
-      vkCreateDevice(physical_device, &info, pAllocator, &handle);
+			vkCreateDevice(physical_device, &info, pAllocator, &handle);
 
-      loadDeviceFunctions(handle);
-    };
+			loadDeviceFunctions(handle);
+		};
 
-    VkQueue Queue (uint32_t queueFamilyIndex, uint32_t queueIndex) {
+		VkQueue Queue (uint32_t queueFamilyIndex, uint32_t queueIndex) {
 
-      VkQueue queue = VK_NULL_HANDLE;
+			VkQueue queue = VK_NULL_HANDLE;
 
-      vkGetDeviceQueue(handle, queueFamilyIndex, queueIndex, &queue);
+			vkGetDeviceQueue(handle, queueFamilyIndex, queueIndex, &queue);
 
-      return queue;
-    };
+			return queue;
+		};
 
-    VkRenderPass RenderPass (
+		VkRenderPass RenderPass (
 
-      uint32_t                       attachmentCount = 0,
-      const VkAttachmentDescription* pAttachments    = nullptr,
-      uint32_t                       subpassCount    = 0,
-      const VkSubpassDescription*    pSubpasses      = nullptr,
-      uint32_t                       dependencyCount = 0,
-      const VkSubpassDependency*     pDependencies   = nullptr,
-      uint32_t                       layers          = 0,
-      VkRenderPassCreateFlags        flags           = 0,
-      const void*                    pNext           = nullptr,
-      const VkAllocationCallbacks*   pAllocator      = nullptr
-    ) {
+			uint32_t                       attachmentCount = 0,
+			const VkAttachmentDescription* pAttachments    = nullptr,
+			uint32_t                       subpassCount    = 0,
+			const VkSubpassDescription*    pSubpasses      = nullptr,
+			uint32_t                       dependencyCount = 0,
+			const VkSubpassDependency*     pDependencies   = nullptr,
+			uint32_t                       layers          = 0,
+			VkRenderPassCreateFlags        flags           = 0,
+			const void*                    pNext           = nullptr,
+			const VkAllocationCallbacks*   pAllocator      = nullptr
+		) {
 
-      VkRenderPassCreateInfo info = {
+			VkRenderPassCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-        pNext,
-        flags,
-        attachmentCount,
-        pAttachments,
-        subpassCount,
-        pSubpasses,
-        dependencyCount,
-        pDependencies
-      };
+				VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+				pNext,
+				flags,
+				attachmentCount,
+				pAttachments,
+				subpassCount,
+				pSubpasses,
+				dependencyCount,
+				pDependencies
+			};
 
-      VkRenderPass render_pass = VK_NULL_HANDLE;
+			VkRenderPass render_pass = VK_NULL_HANDLE;
 
-      vkCreateRenderPass(handle, &info, pAllocator, &render_pass);
+			vkCreateRenderPass(handle, &info, pAllocator, &render_pass);
 
-      render_passes.push_back(render_pass);
+			render_passes.push_back(render_pass);
 
-      return render_pass;
-    };
+			return render_pass;
+		};
 
-    VkSwapchainKHR SwapchainKHR (
+		VkSwapchainKHR SwapchainKHR (
 
-      VkSurfaceKHR                  surface               = VK_NULL_HANDLE,
-      uint32_t                      minImageCount         = 0,
-      VkFormat                      imageFormat           = VK_FORMAT_B8G8R8A8_UNORM,
-      VkColorSpaceKHR               imageColorSpace       = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
-      uint32_t                      imageExtent_width     = 0,
-      uint32_t                      imageExtent_height    = 0,
-      uint32_t                      imageArrayLayers      = 0,
-      VkImageUsageFlags             imageUsage            = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-      VkSharingMode                 imageSharingMode      = VK_SHARING_MODE_EXCLUSIVE,
-      uint32_t                      queueFamilyIndexCount = 0,
-      const uint32_t*               pQueueFamilyIndices   = nullptr,
-      VkSurfaceTransformFlagBitsKHR preTransform          = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
-      VkCompositeAlphaFlagBitsKHR   compositeAlpha        = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-      VkPresentModeKHR              presentMode           = VK_PRESENT_MODE_FIFO_KHR,
-      VkBool32                      clipped               = VK_FALSE,
-      VkSwapchainKHR                oldSwapchain          = VK_NULL_HANDLE,
-      VkSwapchainCreateFlagsKHR     flags                 = 0,
-      const void*                   pNext                 = nullptr,
-      const VkAllocationCallbacks*  pAllocator            = nullptr
-    ) {
+			VkSurfaceKHR                  surface               = VK_NULL_HANDLE,
+			uint32_t                      minImageCount         = 0,
+			VkFormat                      imageFormat           = VK_FORMAT_B8G8R8A8_UNORM,
+			VkColorSpaceKHR               imageColorSpace       = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
+			uint32_t                      imageExtent_width     = 0,
+			uint32_t                      imageExtent_height    = 0,
+			uint32_t                      imageArrayLayers      = 0,
+			VkImageUsageFlags             imageUsage            = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+			VkSharingMode                 imageSharingMode      = VK_SHARING_MODE_EXCLUSIVE,
+			uint32_t                      queueFamilyIndexCount = 0,
+			const uint32_t*               pQueueFamilyIndices   = nullptr,
+			VkSurfaceTransformFlagBitsKHR preTransform          = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
+			VkCompositeAlphaFlagBitsKHR   compositeAlpha        = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+			VkPresentModeKHR              presentMode           = VK_PRESENT_MODE_FIFO_KHR,
+			VkBool32                      clipped               = VK_FALSE,
+			VkSwapchainKHR                oldSwapchain          = VK_NULL_HANDLE,
+			VkSwapchainCreateFlagsKHR     flags                 = 0,
+			const void*                   pNext                 = nullptr,
+			const VkAllocationCallbacks*  pAllocator            = nullptr
+		) {
 
-      VkSwapchainCreateInfoKHR info = {
+			VkSwapchainCreateInfoKHR info = {
 
-        VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-        pNext,
-        flags,
-        surface,
-        minImageCount,
-        imageFormat,
-        imageColorSpace,
-        {
-          imageExtent_width,
-          imageExtent_height
-        },
-        imageArrayLayers,
-        imageUsage,
-        imageSharingMode,
-        queueFamilyIndexCount,
-        pQueueFamilyIndices,
-        preTransform,
-        compositeAlpha,
-        presentMode,
-        clipped,
-        oldSwapchain
-      };
+				VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+				pNext,
+				flags,
+				surface,
+				minImageCount,
+				imageFormat,
+				imageColorSpace,
+				{
+					imageExtent_width,
+					imageExtent_height
+				},
+				imageArrayLayers,
+				imageUsage,
+				imageSharingMode,
+				queueFamilyIndexCount,
+				pQueueFamilyIndices,
+				preTransform,
+				compositeAlpha,
+				presentMode,
+				clipped,
+				oldSwapchain
+			};
 
-      VkSwapchainKHR swapchain = VK_NULL_HANDLE;
+			VkSwapchainKHR swapchain = VK_NULL_HANDLE;
 
-      vkCreateSwapchainKHR(handle, &info, pAllocator, &swapchain);
+			vkCreateSwapchainKHR(handle, &info, pAllocator, &swapchain);
 
-      swapchains.push_back(swapchain);
+			swapchains.push_back(swapchain);
 
-      return swapchain;
-    };
+			return swapchain;
+		};
 
-    std::vector<VkImage> getSwapchainImages (VkSwapchainKHR swapchain) {
+		std::vector<VkImage> getSwapchainImages (VkSwapchainKHR swapchain) {
 
-      uint32_t count = 0;
+			uint32_t count = 0;
 
-      vkGetSwapchainImagesKHR(handle, swapchain, &count, nullptr);
-      std::vector<VkImage> images(count);
-      vkGetSwapchainImagesKHR(handle, swapchain, &count, images.data());
+			vkGetSwapchainImagesKHR(handle, swapchain, &count, nullptr);
+			std::vector<VkImage> images(count);
+			vkGetSwapchainImagesKHR(handle, swapchain, &count, images.data());
 
-      return images;
-    };
+			return images;
+		};
 
-    VkImage Image (
+		VkImage Image (
 
-      VkImageType                  imageType             = VK_IMAGE_TYPE_2D,
-      VkFormat                     format                = VK_FORMAT_B8G8R8A8_UNORM,
-      uint32_t                     extent_width          = 0,
-      uint32_t                     extent_height         = 0,
-      uint32_t                     extent_depth          = 0,
-      uint32_t                     mipLevels             = 0,
-      uint32_t                     arrayLayers           = 0,
-      VkSampleCountFlagBits        samples               = VK_SAMPLE_COUNT_1_BIT,
-      VkImageTiling                tiling                = VK_IMAGE_TILING_OPTIMAL,
-      VkImageUsageFlags            usage                 = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-      VkSharingMode                sharingMode           = VK_SHARING_MODE_EXCLUSIVE,
-      uint32_t                     queueFamilyIndexCount = 0,
-      const uint32_t*              pQueueFamilyIndices   = nullptr,
-      VkImageLayout                initialLayout         = VK_IMAGE_LAYOUT_UNDEFINED,
-      VkImageCreateFlags           flags                 = 0,
-      const void*                  pNext                 = nullptr,
-      const VkAllocationCallbacks* pAllocator            = nullptr
-    ) {
+			VkImageType                  imageType             = VK_IMAGE_TYPE_2D,
+			VkFormat                     format                = VK_FORMAT_B8G8R8A8_UNORM,
+			uint32_t                     extent_width          = 0,
+			uint32_t                     extent_height         = 0,
+			uint32_t                     extent_depth          = 0,
+			uint32_t                     mipLevels             = 0,
+			uint32_t                     arrayLayers           = 0,
+			VkSampleCountFlagBits        samples               = VK_SAMPLE_COUNT_1_BIT,
+			VkImageTiling                tiling                = VK_IMAGE_TILING_OPTIMAL,
+			VkImageUsageFlags            usage                 = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+			VkSharingMode                sharingMode           = VK_SHARING_MODE_EXCLUSIVE,
+			uint32_t                     queueFamilyIndexCount = 0,
+			const uint32_t*              pQueueFamilyIndices   = nullptr,
+			VkImageLayout                initialLayout         = VK_IMAGE_LAYOUT_UNDEFINED,
+			VkImageCreateFlags           flags                 = 0,
+			const void*                  pNext                 = nullptr,
+			const VkAllocationCallbacks* pAllocator            = nullptr
+		) {
 
-      VkImageCreateInfo info = {
+			VkImageCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-        pNext,
-        flags,
-        imageType,
-        format,
-        {
-          extent_width,
-          extent_height,
-          extent_depth,
-        },
-        mipLevels,
-        arrayLayers,
-        samples,
-        tiling,
-        usage,
-        sharingMode,
-        queueFamilyIndexCount,
-        pQueueFamilyIndices,
-        initialLayout
-      };
+				VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+				pNext,
+				flags,
+				imageType,
+				format,
+				{
+					extent_width,
+					extent_height,
+					extent_depth,
+				},
+				mipLevels,
+				arrayLayers,
+				samples,
+				tiling,
+				usage,
+				sharingMode,
+				queueFamilyIndexCount,
+				pQueueFamilyIndices,
+				initialLayout
+			};
 
-      VkImage image = VK_NULL_HANDLE;
+			VkImage image = VK_NULL_HANDLE;
 
-      vkCreateImage(handle, &info, pAllocator, &image);
+			vkCreateImage(handle, &info, pAllocator, &image);
 
-      images.push_back(image);
+			images.push_back(image);
 
-      return image;
-    };
+			return image;
+		};
 
-    VkImageView ImageView (
+		VkImageView ImageView (
 
-      VkImage                      image                           = VK_NULL_HANDLE,
-      VkImageViewType              viewType                        = VK_IMAGE_VIEW_TYPE_2D,
-      VkFormat                     format                          = VK_FORMAT_B8G8R8A8_UNORM,
-      VkComponentSwizzle           compenents_r                    = VK_COMPONENT_SWIZZLE_IDENTITY,
-      VkComponentSwizzle           compenents_g                    = VK_COMPONENT_SWIZZLE_IDENTITY,
-      VkComponentSwizzle           compenents_b                    = VK_COMPONENT_SWIZZLE_IDENTITY,
-      VkComponentSwizzle           compenents_a                    = VK_COMPONENT_SWIZZLE_IDENTITY,
-      VkImageAspectFlags           subresourceRange_aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,
-      uint32_t                     subresourceRange_baseMipLevel   = 0,
-      uint32_t                     subresourceRange_levelCount     = 0,
-      uint32_t                     subresourceRange_baseArrayLayer = 0,
-      uint32_t                     subresourceRange_layerCount     = 0,
-      VkImageViewCreateFlags       flags                           = 0,
-      const void*                  pNext                           = nullptr,
-      const VkAllocationCallbacks* pAllocator                      = nullptr
-    ) {
+			VkImage                      image                           = VK_NULL_HANDLE,
+			VkImageViewType              viewType                        = VK_IMAGE_VIEW_TYPE_2D,
+			VkFormat                     format                          = VK_FORMAT_B8G8R8A8_UNORM,
+			VkComponentSwizzle           compenents_r                    = VK_COMPONENT_SWIZZLE_IDENTITY,
+			VkComponentSwizzle           compenents_g                    = VK_COMPONENT_SWIZZLE_IDENTITY,
+			VkComponentSwizzle           compenents_b                    = VK_COMPONENT_SWIZZLE_IDENTITY,
+			VkComponentSwizzle           compenents_a                    = VK_COMPONENT_SWIZZLE_IDENTITY,
+			VkImageAspectFlags           subresourceRange_aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,
+			uint32_t                     subresourceRange_baseMipLevel   = 0,
+			uint32_t                     subresourceRange_levelCount     = 0,
+			uint32_t                     subresourceRange_baseArrayLayer = 0,
+			uint32_t                     subresourceRange_layerCount     = 0,
+			VkImageViewCreateFlags       flags                           = 0,
+			const void*                  pNext                           = nullptr,
+			const VkAllocationCallbacks* pAllocator                      = nullptr
+		) {
 
-      VkImageViewCreateInfo info = {
+			VkImageViewCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-        pNext,
-        flags,
-        image,
-        viewType,
-        format,
-        {
-          compenents_r,
-          compenents_g,
-          compenents_b,
-          compenents_a
-        },
-        {
-          subresourceRange_aspectMask,
-          subresourceRange_baseMipLevel,
-          subresourceRange_levelCount,
-          subresourceRange_baseArrayLayer,
-          subresourceRange_layerCount
-        }
-      };
+				VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+				pNext,
+				flags,
+				image,
+				viewType,
+				format,
+				{
+					compenents_r,
+					compenents_g,
+					compenents_b,
+					compenents_a
+				},
+				{
+					subresourceRange_aspectMask,
+					subresourceRange_baseMipLevel,
+					subresourceRange_levelCount,
+					subresourceRange_baseArrayLayer,
+					subresourceRange_layerCount
+				}
+			};
 
-      VkImageView image_view = VK_NULL_HANDLE;
+			VkImageView image_view = VK_NULL_HANDLE;
 
-      vkCreateImageView(handle, &info, pAllocator, &image_view);
+			vkCreateImageView(handle, &info, pAllocator, &image_view);
 
-      image_views.push_back(image_view);
+			image_views.push_back(image_view);
 
-      return image_view;
-    };
+			return image_view;
+		};
 
-    VkMemoryRequirements MemReqs (VkImage image) {
+		VkMemoryRequirements MemReqs (VkImage image) {
 
-      VkMemoryRequirements reqs;
+			VkMemoryRequirements reqs;
 
-      vkGetImageMemoryRequirements(handle, image, &reqs);
+			vkGetImageMemoryRequirements(handle, image, &reqs);
 
-      return reqs;
-    };
+			return reqs;
+		};
 
-    VkMemoryRequirements MemReqs (VkBuffer buffer) {
+		VkMemoryRequirements MemReqs (VkBuffer buffer) {
 
-      VkMemoryRequirements reqs;
+			VkMemoryRequirements reqs;
 
-      vkGetBufferMemoryRequirements(handle, buffer, &reqs);
+			vkGetBufferMemoryRequirements(handle, buffer, &reqs);
 
-      return reqs;
-    };
+			return reqs;
+		};
 
-    uint32_t getMemTypeIndex (VkMemoryRequirements* mem_reqs, VkMemoryPropertyFlags flags) {
+		uint32_t getMemTypeIndex (VkMemoryRequirements* mem_reqs, VkMemoryPropertyFlags flags) {
 
-      uint32_t mem_type_count = mem_props.memoryTypeCount;
+			uint32_t mem_type_count = mem_props.memoryTypeCount;
 
-      for (uint32_t i = 0; i < mem_type_count; i++) {
+			for (uint32_t i = 0; i < mem_type_count; i++) {
 
-        uint32_t match = (mem_reqs->memoryTypeBits & (1 << i)) && (mem_props.memoryTypes[i].propertyFlags & flags);
+				uint32_t match = (mem_reqs->memoryTypeBits & (1 << i)) && (mem_props.memoryTypes[i].propertyFlags & flags);
 
-        if (match) {
+				if (match) {
 
-          return i;
-        };
-      }
+					return i;
+				};
+			}
 
-      return -1;
-    };
+			return -1;
+		};
 
-    VkDeviceMemory Mem (
+		VkDeviceMemory Mem (
 
-      VkDeviceSize                 allocationSize  = 0,
-      uint32_t                     memoryTypeIndex = 0,
-      const void*                  pNext           = nullptr,
-      const VkAllocationCallbacks* pAllocator      = nullptr
-    ) {
+			VkDeviceSize                 allocationSize  = 0,
+			uint32_t                     memoryTypeIndex = 0,
+			const void*                  pNext           = nullptr,
+			const VkAllocationCallbacks* pAllocator      = nullptr
+		) {
 
-      VkMemoryAllocateInfo info = {
+			VkMemoryAllocateInfo info = {
 
-        VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-        pNext,
-        allocationSize,
-        memoryTypeIndex
-      };
+				VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+				pNext,
+				allocationSize,
+				memoryTypeIndex
+			};
 
-      VkDeviceMemory mem = VK_NULL_HANDLE;
+			VkDeviceMemory mem = VK_NULL_HANDLE;
 
-      vkAllocateMemory(handle, &info, pAllocator, &mem);
+			vkAllocateMemory(handle, &info, pAllocator, &mem);
 
-      memories.push_back(mem);
+			memories.push_back(mem);
 
-      return mem;
-    };
+			return mem;
+		};
 
-    void bindMem (VkImage image, VkDeviceMemory mem, VkDeviceSize offset = 0) {
+		void bindMem (VkImage image, VkDeviceMemory mem, VkDeviceSize offset = 0) {
 
-      vkBindImageMemory(handle, image, mem, offset);
-    };
+			vkBindImageMemory(handle, image, mem, offset);
+		};
 
-    void bindMem (VkBuffer buffer, VkDeviceMemory mem, VkDeviceSize offset = 0) {
+		void bindMem (VkBuffer buffer, VkDeviceMemory mem, VkDeviceSize offset = 0) {
 
-      vkBindBufferMemory(handle, buffer, mem, offset);
-    };
+			vkBindBufferMemory(handle, buffer, mem, offset);
+		};
 
-    void* mapMem (VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags) {
+		void* mapMem (VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags) {
 
-      void* mem_addr = nullptr;
+			void* mem_addr = nullptr;
 
-      vkMapMemory(handle, memory, offset, size, flags, &mem_addr);
+			vkMapMemory(handle, memory, offset, size, flags, &mem_addr);
 
-      return mem_addr;
-    };
+			return mem_addr;
+		};
 
-    VkFramebuffer Framebuffer (
+		VkFramebuffer Framebuffer (
 
-      VkRenderPass                 renderPass      = VK_NULL_HANDLE,
-      uint32_t                     attachmentCount = 0,
-      const VkImageView*           pAttachments    = nullptr,
-      uint32_t                     width           = 0,
-      uint32_t                     height          = 0,
-      uint32_t                     layers          = 0,
-      VkFramebufferCreateFlags     flags           = 0,
-      const void*                  pNext           = nullptr,
-      const VkAllocationCallbacks* pAllocator      = nullptr
-    ) {
+			VkRenderPass                 renderPass      = VK_NULL_HANDLE,
+			uint32_t                     attachmentCount = 0,
+			const VkImageView*           pAttachments    = nullptr,
+			uint32_t                     width           = 0,
+			uint32_t                     height          = 0,
+			uint32_t                     layers          = 0,
+			VkFramebufferCreateFlags     flags           = 0,
+			const void*                  pNext           = nullptr,
+			const VkAllocationCallbacks* pAllocator      = nullptr
+		) {
 
-      VkFramebufferCreateInfo info = {
+			VkFramebufferCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-        pNext,
-        flags,
-        renderPass,
-        attachmentCount,
-        pAttachments,
-        width,
-        height,
-        layers
-      };
+				VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+				pNext,
+				flags,
+				renderPass,
+				attachmentCount,
+				pAttachments,
+				width,
+				height,
+				layers
+			};
 
-      VkFramebuffer framebuffer = VK_NULL_HANDLE;
+			VkFramebuffer framebuffer = VK_NULL_HANDLE;
 
-      vkCreateFramebuffer(handle, &info, pAllocator, &framebuffer);
+			vkCreateFramebuffer(handle, &info, pAllocator, &framebuffer);
 
-      framebuffers.push_back(framebuffer);
+			framebuffers.push_back(framebuffer);
 
-      return framebuffer;
-    };
+			return framebuffer;
+		};
 
-    VkFence Fence (
+		VkFence Fence (
 
-      VkFenceCreateFlags           flags      = 0,
-      const void*                  pNext      = nullptr,
-      const VkAllocationCallbacks* pAllocator = nullptr
-    ) {
+			VkFenceCreateFlags           flags      = 0,
+			const void*                  pNext      = nullptr,
+			const VkAllocationCallbacks* pAllocator = nullptr
+		) {
 
-      VkFenceCreateInfo info = {
+			VkFenceCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
-        pNext,
-        flags
-      };
+				VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+				pNext,
+				flags
+			};
 
-      VkFence fence = VK_NULL_HANDLE;
+			VkFence fence = VK_NULL_HANDLE;
 
-      vkCreateFence(handle, &info, pAllocator, &fence);
+			vkCreateFence(handle, &info, pAllocator, &fence);
 
-      fences.push_back(fence);
+			fences.push_back(fence);
 
-      return fence;
-    };
+			return fence;
+		};
 
-    VkSemaphore Semaphore (
+		VkSemaphore Semaphore (
 
-      VkSemaphoreCreateFlags       flags      = 0,
-      const void*                  pNext      = nullptr,
-      const VkAllocationCallbacks* pAllocator = nullptr
-    ) {
+			VkSemaphoreCreateFlags       flags      = 0,
+			const void*                  pNext      = nullptr,
+			const VkAllocationCallbacks* pAllocator = nullptr
+		) {
 
-      VkSemaphoreCreateInfo info = {
+			VkSemaphoreCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
-        pNext,
-        flags,
-      };
+				VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
+				pNext,
+				flags,
+			};
 
-      VkSemaphore semaphore = VK_NULL_HANDLE;
+			VkSemaphore semaphore = VK_NULL_HANDLE;
 
-      vkCreateSemaphore(handle, &info, pAllocator, &semaphore);
+			vkCreateSemaphore(handle, &info, pAllocator, &semaphore);
 
-      semaphores.push_back(semaphore);
+			semaphores.push_back(semaphore);
 
-      return semaphore;
-    };
+			return semaphore;
+		};
 
-    VkBuffer Buffer (
+		VkBuffer Buffer (
 
-      VkDeviceSize                 size                  = 0,
-      VkBufferUsageFlags           usage                 = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-      VkSharingMode                sharingMode           = VK_SHARING_MODE_EXCLUSIVE,
-      uint32_t                     queueFamilyIndexCount = 0,
-      const uint32_t*              pQueueFamilyIndices   = 0,
-      VkBufferCreateFlags          flags                 = 0,
-      const void*                  pNext                 = nullptr,
-      const VkAllocationCallbacks* pAllocator            = nullptr
-    ) {
+			VkDeviceSize                 size                  = 0,
+			VkBufferUsageFlags           usage                 = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+			VkSharingMode                sharingMode           = VK_SHARING_MODE_EXCLUSIVE,
+			uint32_t                     queueFamilyIndexCount = 0,
+			const uint32_t*              pQueueFamilyIndices   = 0,
+			VkBufferCreateFlags          flags                 = 0,
+			const void*                  pNext                 = nullptr,
+			const VkAllocationCallbacks* pAllocator            = nullptr
+		) {
 
-      VkBufferCreateInfo info = {
+			VkBufferCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-        pNext,
-        flags,
-        size,
-        usage,
-        sharingMode,
-        queueFamilyIndexCount,
-        pQueueFamilyIndices
-      };
+				VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+				pNext,
+				flags,
+				size,
+				usage,
+				sharingMode,
+				queueFamilyIndexCount,
+				pQueueFamilyIndices
+			};
 
-      VkBuffer buffer = VK_NULL_HANDLE;
+			VkBuffer buffer = VK_NULL_HANDLE;
 
-      vkCreateBuffer(handle, &info, pAllocator, &buffer);
+			vkCreateBuffer(handle, &info, pAllocator, &buffer);
 
-      buffers.push_back(buffer);
+			buffers.push_back(buffer);
 
-      return buffer;
-    };
+			return buffer;
+		};
 
-    VkDescriptorSetLayout DescrSetLayout (
+		VkDescriptorSetLayout DescrSetLayout (
 
-      uint32_t                            bindingCount = 0,
-      const VkDescriptorSetLayoutBinding* pBindings    = nullptr,
-      VkDescriptorSetLayoutCreateFlags    flags        = 0,
-      const void*                         pNext        = nullptr,
-      const VkAllocationCallbacks*        pAllocator   = nullptr
-    ) {
+			uint32_t                            bindingCount = 0,
+			const VkDescriptorSetLayoutBinding* pBindings    = nullptr,
+			VkDescriptorSetLayoutCreateFlags    flags        = 0,
+			const void*                         pNext        = nullptr,
+			const VkAllocationCallbacks*        pAllocator   = nullptr
+		) {
 
-      VkDescriptorSetLayoutCreateInfo info = {
+			VkDescriptorSetLayoutCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-        pNext,
-        flags,
-        bindingCount,
-        pBindings
-      };
+				VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+				pNext,
+				flags,
+				bindingCount,
+				pBindings
+			};
 
-      VkDescriptorSetLayout layout = VK_NULL_HANDLE;
+			VkDescriptorSetLayout layout = VK_NULL_HANDLE;
 
-      vkCreateDescriptorSetLayout(handle, &info, pAllocator, &layout);
+			vkCreateDescriptorSetLayout(handle, &info, pAllocator, &layout);
 
-      descr_set_layouts.push_back(layout);
+			descr_set_layouts.push_back(layout);
 
-      return layout;
-    };
+			return layout;
+		};
 
-    VkDescriptorPool DescrPool (
+		VkDescriptorPool DescrPool (
 
-      uint32_t                     maxSets       = 0,
-      uint32_t                     poolSizeCount = 0,
-      const VkDescriptorPoolSize*  pPoolSizes    = nullptr,
-      VkDescriptorPoolCreateFlags  flags         = 0,
-      const void*                  pNext         = nullptr,
-      const VkAllocationCallbacks* pAllocator    = nullptr
-    ) {
+			uint32_t                     maxSets       = 0,
+			uint32_t                     poolSizeCount = 0,
+			const VkDescriptorPoolSize*  pPoolSizes    = nullptr,
+			VkDescriptorPoolCreateFlags  flags         = 0,
+			const void*                  pNext         = nullptr,
+			const VkAllocationCallbacks* pAllocator    = nullptr
+		) {
 
-      VkDescriptorPoolCreateInfo info = {
+			VkDescriptorPoolCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-        pNext,
-        flags,
-        maxSets,
-        poolSizeCount,
-        pPoolSizes
-      };
+				VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+				pNext,
+				flags,
+				maxSets,
+				poolSizeCount,
+				pPoolSizes
+			};
 
-      VkDescriptorPool pool = VK_NULL_HANDLE;
+			VkDescriptorPool pool = VK_NULL_HANDLE;
 
-      vkCreateDescriptorPool(handle, &info, pAllocator, &pool);
+			vkCreateDescriptorPool(handle, &info, pAllocator, &pool);
 
-      descr_pools.push_back(pool);
+			descr_pools.push_back(pool);
 
-      return pool;
-    };
+			return pool;
+		};
 
-    std::vector<VkDescriptorSet> DescrSet (
+		std::vector<VkDescriptorSet> DescrSet (
 
-      VkDescriptorPool             descriptorPool        = VK_NULL_HANDLE,
-      uint32_t                     descriptorSetCount    = 0,
-      const VkDescriptorSetLayout* pSetdescr_set_layouts = nullptr,
-      const void*                  pNext                 = nullptr
-    ) {
+			VkDescriptorPool             descriptorPool        = VK_NULL_HANDLE,
+			uint32_t                     descriptorSetCount    = 0,
+			const VkDescriptorSetLayout* pSetdescr_set_layouts = nullptr,
+			const void*                  pNext                 = nullptr
+		) {
 
-      VkDescriptorSetAllocateInfo info = {
+			VkDescriptorSetAllocateInfo info = {
 
-        VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-        pNext,
-        descriptorPool,
-        descriptorSetCount,
-        pSetdescr_set_layouts
-      };
+				VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+				pNext,
+				descriptorPool,
+				descriptorSetCount,
+				pSetdescr_set_layouts
+			};
 
-      std::vector<VkDescriptorSet> sets(descriptorSetCount);
+			std::vector<VkDescriptorSet> sets(descriptorSetCount);
 
-      vkAllocateDescriptorSets(handle, &info, sets.data());
+			vkAllocateDescriptorSets(handle, &info, sets.data());
 
-      return sets;
-    };
+			return sets;
+		};
 
-    void updateDescrSets (uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites, uint32_t descriptorCopyCount, const VkCopyDescriptorSet* pDescriptorCopies) {
+		void updateDescrSets (uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites, uint32_t descriptorCopyCount, const VkCopyDescriptorSet* pDescriptorCopies) {
 
-      vkUpdateDescriptorSets(handle, descriptorWriteCount, pDescriptorWrites, descriptorCopyCount, pDescriptorCopies);
-    };
+			vkUpdateDescriptorSets(handle, descriptorWriteCount, pDescriptorWrites, descriptorCopyCount, pDescriptorCopies);
+		};
 
-    VkShaderModule Shader (
+		VkShaderModule Shader (
 
-      size_t                       codeSize   = 0,
-      const uint32_t*              pCode      = nullptr,
-      VkShaderModuleCreateFlags    flags      = 0,
-      const void*                  pNext      = nullptr,
-      const VkAllocationCallbacks* pAllocator = nullptr
-    ) {
+			size_t                       codeSize   = 0,
+			const uint32_t*              pCode      = nullptr,
+			VkShaderModuleCreateFlags    flags      = 0,
+			const void*                  pNext      = nullptr,
+			const VkAllocationCallbacks* pAllocator = nullptr
+		) {
 
-      VkShaderModuleCreateInfo info = {
+			VkShaderModuleCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
-        pNext,
-        flags,
-        codeSize,
-        pCode
-      };
+				VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+				pNext,
+				flags,
+				codeSize,
+				pCode
+			};
 
-      VkShaderModule module = VK_NULL_HANDLE;
+			VkShaderModule module = VK_NULL_HANDLE;
 
-      vkCreateShaderModule(handle, &info, pAllocator, &module);
+			vkCreateShaderModule(handle, &info, pAllocator, &module);
 
-      shader_modules.push_back(module);
+			shader_modules.push_back(module);
 
-      return module;
-    };
+			return module;
+		};
 
-    VkPipelineLayout PplLayout (
+		VkPipelineLayout PplLayout (
 
-      uint32_t                     setLayoutCount         = 0,
-      const VkDescriptorSetLayout* pSetdescr_set_layouts  = nullptr,
-      uint32_t                     pushConstantRangeCount = 0,
-      const VkPushConstantRange*   pPushConstantRanges    = nullptr,
-      VkPipelineLayoutCreateFlags  flags                  = 0,
-      const void*                  pNext                  = nullptr,
-      const VkAllocationCallbacks* pAllocator             = nullptr
-    ) {
+			uint32_t                     setLayoutCount         = 0,
+			const VkDescriptorSetLayout* pSetdescr_set_layouts  = nullptr,
+			uint32_t                     pushConstantRangeCount = 0,
+			const VkPushConstantRange*   pPushConstantRanges    = nullptr,
+			VkPipelineLayoutCreateFlags  flags                  = 0,
+			const void*                  pNext                  = nullptr,
+			const VkAllocationCallbacks* pAllocator             = nullptr
+		) {
 
-      VkPipelineLayoutCreateInfo info = {
+			VkPipelineLayoutCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-        pNext,
-        flags,
-        setLayoutCount,
-        pSetdescr_set_layouts,
-        pushConstantRangeCount,
-        pPushConstantRanges
-      };
+				VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+				pNext,
+				flags,
+				setLayoutCount,
+				pSetdescr_set_layouts,
+				pushConstantRangeCount,
+				pPushConstantRanges
+			};
 
-      VkPipelineLayout layout = VK_NULL_HANDLE;
+			VkPipelineLayout layout = VK_NULL_HANDLE;
 
-      vkCreatePipelineLayout(handle, &info, pAllocator, &layout);
+			vkCreatePipelineLayout(handle, &info, pAllocator, &layout);
 
-      ppl_layouts.push_back(layout);
+			ppl_layouts.push_back(layout);
 
-      return layout;
-    };
+			return layout;
+		};
 
-    VkPipeline PplG (
+		VkPipeline PplG (
 
-      uint32_t                                      stageCount          = 0,
-      const VkPipelineShaderStageCreateInfo*        pStages             = nullptr,
-      const VkPipelineVertexInputStateCreateInfo*   pVertexInputState   = nullptr,
-      const VkPipelineInputAssemblyStateCreateInfo* pInputAssemblyState = nullptr,
-      const VkPipelineTessellationStateCreateInfo*  pTessellationState  = nullptr,
-      const VkPipelineViewportStateCreateInfo*      pViewportState      = nullptr,
-      const VkPipelineRasterizationStateCreateInfo* pRasterizationState = nullptr,
-      const VkPipelineMultisampleStateCreateInfo*   pMultisampleState   = nullptr,
-      const VkPipelineDepthStencilStateCreateInfo*  pDepthStencilState  = nullptr,
-      const VkPipelineColorBlendStateCreateInfo*    pColorBlendState    = nullptr,
-      const VkPipelineDynamicStateCreateInfo*       pDynamicState       = nullptr,
-      VkPipelineLayout                              layout              = VK_NULL_HANDLE,
-      VkRenderPass                                  renderPass          = VK_NULL_HANDLE,
-      uint32_t                                      subpass             = 0,
-      VkPipeline                                    basePipelineHandle  = VK_NULL_HANDLE,
-      int32_t                                       basePipelineIndex   = 0,
-      VkPipelineCreateFlags                         flags               = 0,
-      const void*                                   pNext               = nullptr,
-      VkPipelineCache                               pipelineCache       = VK_NULL_HANDLE,
-      const VkAllocationCallbacks*                  pAllocator          = nullptr
-    ) {
+			uint32_t                                      stageCount          = 0,
+			const VkPipelineShaderStageCreateInfo*        pStages             = nullptr,
+			const VkPipelineVertexInputStateCreateInfo*   pVertexInputState   = nullptr,
+			const VkPipelineInputAssemblyStateCreateInfo* pInputAssemblyState = nullptr,
+			const VkPipelineTessellationStateCreateInfo*  pTessellationState  = nullptr,
+			const VkPipelineViewportStateCreateInfo*      pViewportState      = nullptr,
+			const VkPipelineRasterizationStateCreateInfo* pRasterizationState = nullptr,
+			const VkPipelineMultisampleStateCreateInfo*   pMultisampleState   = nullptr,
+			const VkPipelineDepthStencilStateCreateInfo*  pDepthStencilState  = nullptr,
+			const VkPipelineColorBlendStateCreateInfo*    pColorBlendState    = nullptr,
+			const VkPipelineDynamicStateCreateInfo*       pDynamicState       = nullptr,
+			VkPipelineLayout                              layout              = VK_NULL_HANDLE,
+			VkRenderPass                                  renderPass          = VK_NULL_HANDLE,
+			uint32_t                                      subpass             = 0,
+			VkPipeline                                    basePipelineHandle  = VK_NULL_HANDLE,
+			int32_t                                       basePipelineIndex   = 0,
+			VkPipelineCreateFlags                         flags               = 0,
+			const void*                                   pNext               = nullptr,
+			VkPipelineCache                               pipelineCache       = VK_NULL_HANDLE,
+			const VkAllocationCallbacks*                  pAllocator          = nullptr
+		) {
 
-      VkGraphicsPipelineCreateInfo info = {
+			VkGraphicsPipelineCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
-        pNext,
-        flags,
-        stageCount,
-        pStages,
-        pVertexInputState,
-        pInputAssemblyState,
-        pTessellationState,
-        pViewportState,
-        pRasterizationState,
-        pMultisampleState,
-        pDepthStencilState,
-        pColorBlendState,
-        pDynamicState,
-        layout,
-        renderPass,
-        subpass,
-        basePipelineHandle,
-        basePipelineIndex
-      };
+				VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+				pNext,
+				flags,
+				stageCount,
+				pStages,
+				pVertexInputState,
+				pInputAssemblyState,
+				pTessellationState,
+				pViewportState,
+				pRasterizationState,
+				pMultisampleState,
+				pDepthStencilState,
+				pColorBlendState,
+				pDynamicState,
+				layout,
+				renderPass,
+				subpass,
+				basePipelineHandle,
+				basePipelineIndex
+			};
 
-      VkPipeline pipeline = VK_NULL_HANDLE;
+			VkPipeline pipeline = VK_NULL_HANDLE;
 
-      vkCreateGraphicsPipelines(handle, pipelineCache, 1, &info, pAllocator, &pipeline);
+			vkCreateGraphicsPipelines(handle, pipelineCache, 1, &info, pAllocator, &pipeline);
 
-      pipelines.push_back(pipeline);
+			pipelines.push_back(pipeline);
 
-      return pipeline;
-    };
+			return pipeline;
+		};
 
-    VkCommandPool CmdPool (
+		VkCommandPool CmdPool (
 
-      uint32_t                     queueFamilyIndex = 0,
-      VkCommandPoolCreateFlags     flags            = 0,
-      const void*                  pNext            = nullptr,
-      const VkAllocationCallbacks* pAllocator       = nullptr
-    ) {
+			uint32_t                     queueFamilyIndex = 0,
+			VkCommandPoolCreateFlags     flags            = 0,
+			const void*                  pNext            = nullptr,
+			const VkAllocationCallbacks* pAllocator       = nullptr
+		) {
 
-      VkCommandPoolCreateInfo info = {
+			VkCommandPoolCreateInfo info = {
 
-        VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-        pNext,
-        flags,
-        queueFamilyIndex
-      };
+				VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+				pNext,
+				flags,
+				queueFamilyIndex
+			};
 
-      VkCommandPool pool = VK_NULL_HANDLE;
+			VkCommandPool pool = VK_NULL_HANDLE;
 
-      vkCreateCommandPool(handle, &info, pAllocator, &pool);
+			vkCreateCommandPool(handle, &info, pAllocator, &pool);
 
-      cmd_pools.push_back(pool);
+			cmd_pools.push_back(pool);
 
-      return pool;
-    };
+			return pool;
+		};
 
-    std::vector<VkCommandBuffer> CmdBuffer (
+		std::vector<VkCommandBuffer> CmdBuffer (
 
-      VkCommandPool        commandPool        = VK_NULL_HANDLE,
-      VkCommandBufferLevel level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-      uint32_t             commandBufferCount = 0,
-      const void*          pNext              = nullptr
-    ) {
+			VkCommandPool        commandPool        = VK_NULL_HANDLE,
+			VkCommandBufferLevel level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+			uint32_t             commandBufferCount = 0,
+			const void*          pNext              = nullptr
+		) {
 
-      VkCommandBufferAllocateInfo info = {
+			VkCommandBufferAllocateInfo info = {
 
-        VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-        pNext,
-        commandPool,
-        level,
-        commandBufferCount
-      };
+				VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+				pNext,
+				commandPool,
+				level,
+				commandBufferCount
+			};
 
-      std::vector<VkCommandBuffer> buffers(commandBufferCount);
+			std::vector<VkCommandBuffer> buffers(commandBufferCount);
 
-      vkAllocateCommandBuffers(handle, &info, buffers.data());
+			vkAllocateCommandBuffers(handle, &info, buffers.data());
 
-      return buffers;
-    };
+			return buffers;
+		};
 
-    void destroy (void) {
+		void destroy (void) {
 
-      delete[] surface_formats;
-      delete[] queue_family_props;
+			delete[] surface_formats;
+			delete[] queue_family_props;
 
-      for (uint64_t i = 0; i < render_passes.size(); i++) {
+			for (uint64_t i = 0; i < render_passes.size(); i++) {
 
-        vkDestroyRenderPass(handle, render_passes[i], nullptr);
-      }
+				vkDestroyRenderPass(handle, render_passes[i], nullptr);
+			}
 
-      render_passes.resize(0);
+			render_passes.resize(0);
 
-      for (uint64_t i = 0; i < swapchains.size(); i++) {
+			for (uint64_t i = 0; i < swapchains.size(); i++) {
 
-        vkDestroySwapchainKHR(handle, swapchains[i], nullptr);
-      }
+				vkDestroySwapchainKHR(handle, swapchains[i], nullptr);
+			}
 
-      swapchains.resize(0);
+			swapchains.resize(0);
 
-      for (uint64_t i = 0; i < image_views.size(); i++) {
+			for (uint64_t i = 0; i < image_views.size(); i++) {
 
-        vkDestroyImageView(handle, image_views[i], nullptr);
-      }
+				vkDestroyImageView(handle, image_views[i], nullptr);
+			}
 
-      image_views.resize(0);
+			image_views.resize(0);
 
-      for (uint64_t i = 0; i < images.size(); i++) {
+			for (uint64_t i = 0; i < images.size(); i++) {
 
-        vkDestroyImage(handle, images[i], nullptr);
-      }
+				vkDestroyImage(handle, images[i], nullptr);
+			}
 
-      images.resize(0);
+			images.resize(0);
 
-      for (uint64_t i = 0; i < memories.size(); i++) {
+			for (uint64_t i = 0; i < memories.size(); i++) {
 
-        vkFreeMemory(handle, memories[i], nullptr);
-      }
+				vkFreeMemory(handle, memories[i], nullptr);
+			}
 
-      memories.resize(0);
+			memories.resize(0);
 
-      for (uint64_t i = 0; i < framebuffers.size(); i++) {
+			for (uint64_t i = 0; i < framebuffers.size(); i++) {
 
-        vkDestroyFramebuffer(handle, framebuffers[i], nullptr);
-      }
+				vkDestroyFramebuffer(handle, framebuffers[i], nullptr);
+			}
 
-      framebuffers.resize(0);
+			framebuffers.resize(0);
 
-      for (uint64_t i = 0; i < fences.size(); i++) {
+			for (uint64_t i = 0; i < fences.size(); i++) {
 
-        vkDestroyFence(handle, fences[i], nullptr);
-      }
+				vkDestroyFence(handle, fences[i], nullptr);
+			}
 
-      fences.resize(0);
+			fences.resize(0);
 
-      for (uint64_t i = 0; i < semaphores.size(); i++) {
+			for (uint64_t i = 0; i < semaphores.size(); i++) {
 
-        vkDestroySemaphore(handle, semaphores[i], nullptr);
-      }
+				vkDestroySemaphore(handle, semaphores[i], nullptr);
+			}
 
-      semaphores.resize(0);
+			semaphores.resize(0);
 
-      for (uint64_t i = 0; i < buffers.size(); i++) {
+			for (uint64_t i = 0; i < buffers.size(); i++) {
 
-        vkDestroyBuffer(handle, buffers[i], nullptr);
-      }
+				vkDestroyBuffer(handle, buffers[i], nullptr);
+			}
 
-      buffers.resize(0);
+			buffers.resize(0);
 
-      for (uint64_t i = 0; i < descr_set_layouts.size(); i++) {
+			for (uint64_t i = 0; i < descr_set_layouts.size(); i++) {
 
-        vkDestroyDescriptorSetLayout(handle, descr_set_layouts[i], nullptr);
-      }
+				vkDestroyDescriptorSetLayout(handle, descr_set_layouts[i], nullptr);
+			}
 
-      descr_set_layouts.resize(0);
+			descr_set_layouts.resize(0);
 
-      for (uint64_t i = 0; i < ppl_layouts.size(); i++) {
+			for (uint64_t i = 0; i < ppl_layouts.size(); i++) {
 
-        vkDestroyPipelineLayout(handle, ppl_layouts[i], nullptr);
-      }
+				vkDestroyPipelineLayout(handle, ppl_layouts[i], nullptr);
+			}
 
-      ppl_layouts.resize(0);
+			ppl_layouts.resize(0);
 
-      for (uint64_t i = 0; i < descr_pools.size(); i++) {
+			for (uint64_t i = 0; i < descr_pools.size(); i++) {
 
-        vkDestroyDescriptorPool(handle, descr_pools[i], nullptr);
-      }
+				vkDestroyDescriptorPool(handle, descr_pools[i], nullptr);
+			}
 
-      descr_pools.resize(0);
+			descr_pools.resize(0);
 
-      for (uint64_t i = 0; i < shader_modules.size(); i++) {
+			for (uint64_t i = 0; i < shader_modules.size(); i++) {
 
-        vkDestroyShaderModule(handle, shader_modules[i], nullptr);
-      }
+				vkDestroyShaderModule(handle, shader_modules[i], nullptr);
+			}
 
-      shader_modules.resize(0);
+			shader_modules.resize(0);
 
-      for (uint64_t i = 0; i < pipelines.size(); i++) {
+			for (uint64_t i = 0; i < pipelines.size(); i++) {
 
-        vkDestroyPipeline(handle, pipelines[i], nullptr);
-      }
+				vkDestroyPipeline(handle, pipelines[i], nullptr);
+			}
 
-      pipelines.resize(0);
+			pipelines.resize(0);
 
-      for (uint64_t i = 0; i < cmd_pools.size(); i++) {
+			for (uint64_t i = 0; i < cmd_pools.size(); i++) {
 
-        vkDestroyCommandPool(handle, cmd_pools[i], nullptr);
-      }
+				vkDestroyCommandPool(handle, cmd_pools[i], nullptr);
+			}
 
-      cmd_pools.resize(0);
+			cmd_pools.resize(0);
 
-      vkDestroyDevice(handle, nullptr);
-    };
-  };
+			vkDestroyDevice(handle, nullptr);
+		};
+	};
 };
 
 
