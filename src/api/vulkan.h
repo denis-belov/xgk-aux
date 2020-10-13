@@ -1,7 +1,7 @@
-#if defined(__GNUC__) || defined(__GNUG__)
+#if defined(__GNUC__)
 
 	#define INLINE __attribute__((always_inline)) inline
-#else
+#elif defined(_MSC_VER)
 
 	#define INLINE __forceinline
 #endif
