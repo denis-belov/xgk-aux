@@ -1204,11 +1204,11 @@ namespace XGK::VULKAN {
 
 			vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, surface, &surface_capabilities);
 
-			std::cout << surface_capabilities.minImageCount << std::endl;
-			std::cout << surface_capabilities.maxImageCount << std::endl;
-			std::cout << surface_capabilities.currentExtent.width << " " << surface_capabilities.currentExtent.height << std::endl;
-			std::cout << surface_capabilities.minImageExtent.width << " " << surface_capabilities.minImageExtent.height << std::endl;
-			std::cout << surface_capabilities.maxImageExtent.width << " " << surface_capabilities.maxImageExtent.height << std::endl;
+			// std::cout << surface_capabilities.minImageCount << std::endl;
+			// std::cout << surface_capabilities.maxImageCount << std::endl;
+			// std::cout << surface_capabilities.currentExtent.width << " " << surface_capabilities.currentExtent.height << std::endl;
+			// std::cout << surface_capabilities.minImageExtent.width << " " << surface_capabilities.minImageExtent.height << std::endl;
+			// std::cout << surface_capabilities.maxImageExtent.width << " " << surface_capabilities.maxImageExtent.height << std::endl;
 
 
 			// std::cout << "queue family properties count: " << queue_family_prop_count << std::endl;

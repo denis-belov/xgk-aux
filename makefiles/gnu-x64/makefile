@@ -1,126 +1,69 @@
-DIR=~/reps/denis-belov/xgk
+NAME=xgk-aux
+
+BUILD_TYPE=gnu-x64
+
+ROOT=~
+
+DIR=$(ROOT)/reps/denis-belov/$(NAME)
 
 SRC=$(DIR)/src
 
-BUILD=$(DIR)/build/gnu-x64
+BUILD=$(DIR)/build/$(BUILD_TYPE)
 
-COMP_ARGS= \
+ASSEMBLER=gcc
+
+ASSEMBLER_ARG=-c -o # trailing space
+
+COMPILER=g++
+
+COMPILER_ARG=\
 	-c \
 	-m64 -msse3 -Ofast -funroll-loops \
 	-I $(SRC) \
-	-D MEM_ADDR_LENGTH=8 -D XGK_NO_INLINE=1
+	-o # trailing space
+
+BUILDER=ld
+
+BUILDER_ARG=-r -flto -o # trailing space
+
+#file extensions
+a=a
+o=o
+s=s
+
+makeBuild=echo mkdir -p $(DIR)/build && mkdir -p $(BUILD)
+makeA=mkdir -p $(BUILD)/$(a)
+makeO=mkdir -p $(BUILD)/$(o)
+makeS=mkdir -p $(BUILD)/$(s)
 
 
 
-$(BUILD)/a/xgk.a : \
-$(BUILD)/o/util-asm-x64.o \
-$(BUILD)/o/util.o \
-$(BUILD)/o/vec4.o \
-$(BUILD)/o/vec4-32.o \
-$(BUILD)/o/vec4-128.o \
-$(BUILD)/o/quat.o \
-$(BUILD)/o/quat-32.o \
-$(BUILD)/o/quat-128.o \
-$(BUILD)/o/mat4.o \
-$(BUILD)/o/mat4-32.o \
-$(BUILD)/o/mat4-128.o\
-$(BUILD)/o/object.o
-	ld -o $(BUILD)/a/xgk.a \
-	-r \
-	-flto \
-	$(BUILD)/o/util-asm-x64.o \
-	$(BUILD)/o/util.o \
-	$(BUILD)/o/vec4.o \
-	$(BUILD)/o/vec4-32.o \
-	$(BUILD)/o/vec4-128.o \
-	$(BUILD)/o/quat.o \
-	$(BUILD)/o/quat-32.o \
-	$(BUILD)/o/quat-128.o \
-	$(BUILD)/o/mat4.o \
-	$(BUILD)/o/mat4-32.o \
-	$(BUILD)/o/mat4-128.o \
-	$(BUILD)/o/object.o
+$(BUILD)/$(a)/$(NAME).$(a) :\
+$(BUILD)/$(o)/transition.$(o) \
+$(BUILD)/$(o)/transition-stack.$(o)
+	$(makeBuild) && $(makeA) &&	$(makeS) && \
+	$(BUILDER) \
+		$(BUILD)/$(o)/transition.$(o) \
+		$(BUILD)/$(o)/transition-stack.$(o) \
+	$(BUILDER_ARG)$(BUILD)/$(a)/$(NAME).$(a) && \
+	objdump -d -M intel -S $(BUILD)/$(a)/$(NAME).$(a) > $(BUILD)/s/$(NAME).s
 
 
 
-$(BUILD)/o/util-asm-x64.o : $(SRC)/util/util-asm-x64.s
-	gcc -o $(BUILD)/o/util-asm-x64.o \
-	-c \
-	$(SRC)/util/util-asm-x64.s
+$(BUILD)/$(o)/transition.$(o) :\
+$(SRC)/transition-stack/transition-stack.h \
+$(SRC)/transition/transition.h \
+$(SRC)/transition/transition.cpp
+	$(makeBuild) && $(makeO) && $(makeS) && \
+	$(COMPILER) $(SRC)/transition/transition.cpp $(COMPILER_ARG)$(BUILD)/$(o)/transition.$(o) && \
+	objdump -d -M intel -S $(BUILD)/$(o)/transition.$(o) > $(BUILD)/s/transition.s
 
 
 
-$(BUILD)/o/util.o : $(SRC)/util/util.cpp
-	g++ -o $(BUILD)/o/util.o \
-	$(SRC)/util/util.cpp \
-	$(COMP_ARGS)
-
-
-
-$(BUILD)/o/vec4.o : $(SRC)/data/vec4/vec4.cpp
-	g++ -o $(BUILD)/o/vec4.o \
-	$(SRC)/data/vec4/vec4.cpp \
-	$(COMP_ARGS)
-
-
-
-$(BUILD)/o/vec4-32.o : $(SRC)/data/vec4/vec4-32.cpp
-	g++ -o $(BUILD)/o/vec4-32.o \
-	$(SRC)/data/vec4/vec4-32.cpp \
-	$(COMP_ARGS)
-
-
-
-$(BUILD)/o/vec4-128.o : $(SRC)/data/vec4/vec4-128.cpp
-	g++ -o $(BUILD)/o/vec4-128.o \
-	$(SRC)/data/vec4/vec4-128.cpp \
-	$(COMP_ARGS)
-
-
-
-$(BUILD)/o/quat.o : $(SRC)/data/quat/quat.cpp
-	g++ -o $(BUILD)/o/quat.o \
-	$(SRC)/data/quat/quat.cpp \
-	$(COMP_ARGS)
-
-
-
-$(BUILD)/o/quat-32.o : $(SRC)/data/quat/quat-32.cpp
-	g++ -o $(BUILD)/o/quat-32.o \
-	$(SRC)/data/quat/quat-32.cpp \
-	$(COMP_ARGS)
-
-
-
-$(BUILD)/o/quat-128.o : $(SRC)/data/quat/quat-128.cpp
-	g++ -o $(BUILD)/o/quat-128.o \
-	$(SRC)/data/quat/quat-128.cpp \
-	$(COMP_ARGS)
-
-
-
-$(BUILD)/o/mat4.o : $(SRC)/data/mat4/mat4.cpp
-	g++ -o $(BUILD)/o/mat4.o \
-	$(SRC)/data/mat4/mat4.cpp \
-	$(COMP_ARGS)
-
-
-
-$(BUILD)/o/mat4-32.o : $(SRC)/data/mat4/mat4-32.cpp
-	g++ -o $(BUILD)/o/mat4-32.o \
-	$(SRC)/data/mat4/mat4-32.cpp \
-	$(COMP_ARGS)
-
-
-
-$(BUILD)/o/mat4-128.o : $(SRC)/data/mat4/mat4-128.cpp
-	g++ -o $(BUILD)/o/mat4-128.o \
-	$(SRC)/data/mat4/mat4-128.cpp \
-	$(COMP_ARGS)
-
-
-
-$(BUILD)/o/object.o : $(SRC)/data/data.h $(SRC)/object/object.h $(SRC)/object/object.cpp
-	g++ -o $(BUILD)/o/object.o \
-	$(SRC)/object/object.cpp \
-	$(COMP_ARGS)
+$(BUILD)/$(o)/transition-stack.$(o) :\
+$(SRC)/transition/transition.h \
+$(SRC)/transition-stack/transition-stack.h \
+$(SRC)/transition-stack/transition-stack.cpp
+	$(makeBuild) && $(makeO) && $(makeS) && \
+	$(COMPILER) $(SRC)/transition-stack/transition-stack.cpp $(COMPILER_ARG)$(BUILD)/$(o)/transition-stack.$(o) && \
+	objdump -d -M intel -S $(BUILD)/$(o)/transition-stack.$(o) > $(BUILD)/s/transition-stack.s
