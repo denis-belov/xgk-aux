@@ -54,4 +54,4 @@ namespace XGK {
       inline void getFrameTime (Time*);
     };
   #endif
-};
+}

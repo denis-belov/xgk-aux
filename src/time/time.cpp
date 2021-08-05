@@ -28,13 +28,13 @@
 //   }
 
 //   return (float) time.QuadPart / freq.QuadPart;
-// };
+// }
 
 
 
 namespace XGK {
 
-  void idle_function (const float, void*) {};
+  void idle_function (const float, void*) {}
 
 
 
@@ -49,7 +49,7 @@ namespace XGK {
 
       time->stack_VECTOR.resize(stack_max_size);
       time->stack_RANGE = time->stack_VECTOR.data();
-    };
+    }
 
 
 
@@ -67,7 +67,7 @@ namespace XGK {
       // printf("\33[2J");
       // std::cout << "update transition count: " << qwe << std::endl;
       // qwe = 0;
-    };
+    }
 
 
 
@@ -80,7 +80,7 @@ namespace XGK {
         time->stack_RANGE[transition->stack_index] = time->stack_RANGE[--time->stack_length];
         time->stack_RANGE[time->stack_length] = nullptr;
       }
-    };
+    }
 
 
 
@@ -103,7 +103,7 @@ namespace XGK {
       transition->stack_index = time->stack_length;
 
       time->stack_RANGE[time->stack_length++] = transition;
-    };
+    }
 
 
 
@@ -126,7 +126,7 @@ namespace XGK {
       transition->stack_index = time->stack_length;
 
       time->stack_RANGE[time->stack_length++] = transition;
-    };
+    }
 
 
 
@@ -148,7 +148,7 @@ namespace XGK {
 
         transition->process_callback(transition->interpolation, transition->additional);
       }
-    };
+    }
 
 
 
@@ -158,7 +158,7 @@ namespace XGK {
 
         updateTransition(time, time->stack_RANGE[time->stack_counter]);
       }
-    };
+    }
 
 
 
@@ -169,6 +169,6 @@ namespace XGK {
       // time->frame_time = program_time - time->last_frame_time;
       time->frame_time = std::chrono::duration_cast<std::chrono::microseconds>(program_time - time->last_frame_time).count();
       time->last_frame_time = program_time;
-    };
-  };
-};
+    }
+  }
+}

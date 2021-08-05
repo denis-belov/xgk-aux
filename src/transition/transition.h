@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <mutex>
 
 namespace XGK {
 
@@ -8,12 +9,13 @@ namespace XGK {
 	struct Transition {
 
 		// revise types
-		uint8_t active;
+		std::mutex mutex;
 		uint64_t time_gone;
-		float interpolation;
 		uint64_t duration;
 		uint64_t index;
 		uint64_t stack_id;
+		float interpolation;
+		uint8_t active;
 
 		void (* process_callback) (const float);
 		void (* end_callback) (const float);
@@ -26,4 +28,4 @@ namespace XGK {
 		void start2 (uint64_t, void (*) (const float));
 		void update (const uint64_t);
 	};
-};
+}

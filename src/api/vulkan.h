@@ -1,8 +1,6 @@
 #if defined(__GNUC__)
-
 	#define INLINE __attribute__((always_inline)) inline
 #elif defined(_MSC_VER)
-
 	#define INLINE __forceinline
 #endif
 
@@ -44,14 +42,12 @@ using std::endl;
 
 
 #if defined(__linux__)
-
 	#define SHARED_LIBRARY_MODULE_TYPE void*
 	#define SHARED_LIBRARY_MODULE_INIT_VALUE nullptr
 	#define SHARED_LIBRARY_LOAD dlopen("libvulkan.so.1", RTLD_LAZY)
 	#define SHARED_LIBRARY_LOAD_FUNCTION dlsym
 	#define SHARED_LIBRARY_FREE dlclose
 #elif defined(_WIN64)
-
 	#define SHARED_LIBRARY_MODULE_TYPE HMODULE
 	#define SHARED_LIBRARY_MODULE_INIT_VALUE 0
 	#define SHARED_LIBRARY_LOAD LoadLibrary("vulkan-1.dll")
@@ -110,10 +106,8 @@ DECL_PROC(vkCreateDebugReportCallbackEXT);
 DECL_PROC(vkDestroyDebugReportCallbackEXT);
 
 #if defined(VK_USE_PLATFORM_XLIB_KHR)
-
 	DECL_PROC(vkCreateXlibSurfaceKHR);
 #elif defined(VK_USE_PLATFORM_WIN32_KHR)
-
 	DECL_PROC(vkCreateWin32SurfaceKHR);
 #endif
 
@@ -217,14 +211,15 @@ DECL_PROC(vkDestroyDescriptorSetLayout);
 
 
 
-namespace XGK::VULKAN {
-
+namespace XGK::VULKAN
+{
+	// SHARED_LIBRARY_MODULE_TYPE shared_library_module_handle { SHARED_LIBRARY_MODULE_INIT_VALUE };
 	SHARED_LIBRARY_MODULE_TYPE shared_library_module_handle = SHARED_LIBRARY_MODULE_INIT_VALUE;
 
 
 
-	void loadGlobalFunctions (void) {
-
+	void loadGlobalFunctions (void)
+	{
 		vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr) SHARED_LIBRARY_LOAD_FUNCTION(shared_library_module_handle, "vkGetInstanceProcAddr");
 
 		#define GET_PROC_ADDR(name) name = (PFN_##name) vkGetInstanceProcAddr(nullptr, #name)
@@ -234,10 +229,10 @@ namespace XGK::VULKAN {
 		GET_PROC_ADDR(vkEnumerateInstanceExtensionProperties);
 
 		#undef GET_PROC_ADDR
-	};
+	}
 
-	void loadSharedLibrary (void) {
-
+	void loadSharedLibrary (void)
+	{
 		// if (shared_library_module_handle) {
 
 		//   // cout << "LIB " << shared_library_module_handle << endl;
@@ -252,19 +247,19 @@ namespace XGK::VULKAN {
 		shared_library_module_handle = SHARED_LIBRARY_LOAD;
 
 		// cout << "LIB " << shared_library_module_handle << endl;
-	};
+	}
 
-	void freeSharedLibrary (void) {
-
+	void freeSharedLibrary (void)
+	{
 		// SHARED_LIBRARY_FREE(shared_library_module_handle);
 
 		// cout << "DLCLOSE " << SHARED_LIBRARY_FREE(shared_library_module_handle) << endl;
 
 		shared_library_module_handle = SHARED_LIBRARY_MODULE_INIT_VALUE;
-	};
+	}
 
-	void loadInstanceFunctions (VkInstance instance) {
-
+	void loadInstanceFunctions (VkInstance instance)
+	{
 		#define GET_PROC_ADDR(name) name = (PFN_##name) vkGetInstanceProcAddr(instance, #name)
 
 		GET_PROC_ADDR(vkDestroyInstance);
@@ -283,10 +278,8 @@ namespace XGK::VULKAN {
 		GET_PROC_ADDR(vkDestroyDebugReportCallbackEXT);
 
 		#if defined(__linux__)
-
 			GET_PROC_ADDR(vkCreateXlibSurfaceKHR);
 		#elif defined(_WIN64)
-
 			GET_PROC_ADDR(vkCreateWin32SurfaceKHR);
 		#endif
 
@@ -297,10 +290,10 @@ namespace XGK::VULKAN {
 		GET_PROC_ADDR(vkDestroySurfaceKHR);
 
 		#undef GET_PROC_ADDR
-	};
+	}
 
-	void loadDeviceFunctions (VkDevice device) {
-
+	void loadDeviceFunctions (VkDevice device)
+	{
 		#define GET_PROC_ADDR(name) name = (PFN_##name) vkGetDeviceProcAddr(device, #name)
 
 		GET_PROC_ADDR(vkDeviceWaitIdle);
@@ -394,38 +387,37 @@ namespace XGK::VULKAN {
 		GET_PROC_ADDR(vkDestroyDescriptorSetLayout);
 
 		#undef GET_PROC_ADDR
-	};
+	}
 
 
 
-	INLINE VkApplicationInfo AppI (
-
+	INLINE VkApplicationInfo AppI
+	(
 		uint32_t    apiVersion         = VK_API_VERSION_1_2,
 		const char* pApplicationName   = nullptr,
 		uint32_t    applicationVersion = 0,
 		const char* pEngineName        = nullptr,
 		uint32_t    engineVersion      = 0,
 		const void* pNext              = nullptr
-	) {
-
-		VkApplicationInfo info = {
-
+	)
+	{
+		VkApplicationInfo info =
+		{
 			VK_STRUCTURE_TYPE_APPLICATION_INFO,
 			pNext,
 			pApplicationName,
 			applicationVersion,
 			pEngineName,
 			engineVersion,
-			apiVersion
+			apiVersion,
 		};
 
 		return info;
-	};
+	}
 
 
 
 	#ifdef DEBUG
-
 		#define DEBUG_REPORT_ARGS \
 			\
 			VkDebugReportFlagsEXT      flags,\
@@ -437,48 +429,48 @@ namespace XGK::VULKAN {
 			const char*                pMessage,\
 			void*                      pUserData
 
-		VkBool32 reportError(DEBUG_REPORT_ARGS) {
-
+		VkBool32 reportError(DEBUG_REPORT_ARGS)
+		{
 			printf("VALIDATION LAYER ERROR: %s\n", pMessage);
 
 			return VK_FALSE;
-		};
+		}
 
-		VkBool32 reportInfo(DEBUG_REPORT_ARGS) {
-
+		VkBool32 reportInfo(DEBUG_REPORT_ARGS)
+		{
 			printf("VALIDATION LAYER INFORMATION: %s\n", pMessage);
 
 			return VK_FALSE;
-		};
+		}
 
-		VkBool32 reportWarn(DEBUG_REPORT_ARGS) {
-
+		VkBool32 reportWarn(DEBUG_REPORT_ARGS)
+		{
 			printf("VALIDATION LAYER WARNING: %s\n", pMessage);
 
 			return VK_FALSE;
-		};
+		}
 
-		VkBool32 reportPerf(DEBUG_REPORT_ARGS) {
-
+		VkBool32 reportPerf(DEBUG_REPORT_ARGS)
+		{
 			printf("VALIDATION LAYER PERFORMANCE WARNING: %s\n", pMessage);
 
 			return VK_FALSE;
-		};
+		}
 
-		VkBool32 reportDebug(DEBUG_REPORT_ARGS) {
-
+		VkBool32 reportDebug(DEBUG_REPORT_ARGS)
+		{
 			printf("VALIDATION LAYER DEBUG: %s\n", pMessage);
 
 			return VK_FALSE;
-		};
+		}
 
 		#undef DEBUG_REPORT_ARGS
 	#endif
 
 
 
-	struct Instance {
-
+	struct Instance
+	{
 		VkInstance        handle                = VK_NULL_HANDLE;
 		uint32_t          physical_device_count = 0;
 		VkPhysicalDevice* physical_devices      = nullptr;
@@ -486,28 +478,27 @@ namespace XGK::VULKAN {
 		std::vector<VkSurfaceKHR> surfaces;
 
 		#ifdef DEBUG
-
 			XGK_VULKAN_MACRO_DECLARE_DEBUG_REPORT_CALLBACKS
 		#endif
 
 
 
-			VkDebugReportCallbackEXT DebugReportCallbackEXT (
-
+			VkDebugReportCallbackEXT DebugReportCallbackEXT
+			(
 				PFN_vkDebugReportCallbackEXT pfnCallback = nullptr,
 				VkDebugReportFlagsEXT        flags       = 0,
 				void*                        pUserData   = nullptr,
 				const void*                  pNext       = nullptr,
 				const VkAllocationCallbacks* pAllocator  = nullptr
-			) {
-
-				VkDebugReportCallbackCreateInfoEXT info = {
-
+			)
+			{
+				VkDebugReportCallbackCreateInfoEXT info =
+				{
 					VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
 					pNext,
 					flags,
 					pfnCallback,
-					pUserData
+					pUserData,
 				};
 
 				VkDebugReportCallbackEXT report_callback = VK_NULL_HANDLE;
@@ -515,17 +506,19 @@ namespace XGK::VULKAN {
 				vkCreateDebugReportCallbackEXT(handle, &info, pAllocator, &report_callback);
 
 				return report_callback;
-			};
+			}
 
-			void enumDevs (void) {
-
+			void enumDevs (void)
+			{
 				vkEnumeratePhysicalDevices(handle, &physical_device_count, nullptr);
+
 				physical_devices = new VkPhysicalDevice[physical_device_count];
+
 				vkEnumeratePhysicalDevices(handle, &physical_device_count, physical_devices);
-			};
+			}
 
-			void create (
-
+			void create
+			(
 				const                        VkApplicationInfo* pApplicationInfo = nullptr,
 				uint32_t                     enabledLayerCount                   = 0,
 				const char* const*           ppEnabledLayerNames                 = nullptr,
@@ -534,10 +527,10 @@ namespace XGK::VULKAN {
 				VkInstanceCreateFlags        flags                               = 0,
 				const void*                  pNext                               = nullptr,
 				const VkAllocationCallbacks* pAllocator                          = nullptr
-			) {
-
-				VkInstanceCreateInfo info = {
-
+			)
+			{
+				VkInstanceCreateInfo info =
+				{
 					VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
 					pNext,
 					flags,
@@ -545,7 +538,7 @@ namespace XGK::VULKAN {
 					enabledLayerCount,
 					ppEnabledLayerNames,
 					enabledExtensionCount,
-					ppEnabledExtensionNames
+					ppEnabledExtensionNames,
 				};
 
 				loadSharedLibrary();
@@ -557,22 +550,19 @@ namespace XGK::VULKAN {
 				loadInstanceFunctions(handle);
 
 				#ifdef DEBUG
-
 					XGK_VULKAN_MACRO_CREATE_DEBUG_REPORT_CALLBACKS(handle)
 				#endif
 
 				enumDevs();
-			};
+			}
 
-			VkSurfaceKHR SurfaceKHR (
-
+			VkSurfaceKHR SurfaceKHR
+			(
 				#if defined(__linux__)
-
 					Display*                     dpy        = nullptr,
 					Window                       window     = 0,
 					VkXlibSurfaceCreateFlagsKHR  flags      = 0,
 				#elif defined(_WIN64)
-
 					HINSTANCE                    hinstance  = 0,
 					HWND                         hwnd       = 0,
 					VkWin32SurfaceCreateFlagsKHR flags      = 0,
@@ -580,163 +570,158 @@ namespace XGK::VULKAN {
 
 				const void*                    pNext      = nullptr,
 				const VkAllocationCallbacks*   pAllocator = nullptr
-			) {
-
+			)
+			{
 				#if defined(__linux__)
-
-					VkXlibSurfaceCreateInfoKHR info = {
-
+					VkXlibSurfaceCreateInfoKHR info =
+					{
 						VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
 						pNext,
 						flags,
 						dpy,
-						window
+						window,
 					};
 				#elif defined(_WIN64)
-
-					VkWin32SurfaceCreateInfoKHR info = {
-
+					VkWin32SurfaceCreateInfoKHR info =
+					{
 						VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
 						pNext,
 						flags,
 						hinstance,
-						hwnd
+						hwnd,
 					};
 				#endif
 
 				VkSurfaceKHR surface = VK_NULL_HANDLE;
 
 				#if defined(__linux__)
-
 					vkCreateXlibSurfaceKHR(handle, &info, pAllocator, &surface);
 				#elif defined(_WIN64)
-
 					vkCreateWin32SurfaceKHR(handle, &info, pAllocator, &surface);
 				#endif
 
 				surfaces.push_back(surface);
 
 				return surface;
-			};
+			}
 
-			void destroy (void) {
-
+			void destroy (void)
+			{
 				delete[] physical_devices;
 
-				for (uint64_t i = 0; i < surfaces.size(); i++) {
-
+				for (uint64_t i = 0; i < surfaces.size(); ++i)
+				{
 					vkDestroySurfaceKHR(handle, surfaces[i], nullptr);
 				}
 
 				surfaces.resize(0);
 
 				#ifdef DEBUG
-
 					XGK_VULKAN_MACRO_DESTROY_DEBUG_REPORT_CALLBACKS(handle);
 				#endif
 
 				vkDestroyInstance(handle, nullptr);
 
 				freeSharedLibrary();
-			};
+			}
 	};
 
 
 
-	VkDeviceQueueCreateInfo DevQueueCI (
-
+	VkDeviceQueueCreateInfo DevQueueCI
+	(
 		uint32_t                 queueFamilyIndex = 0,
 		uint32_t                 queueCount       = 0,
 		const float*             pQueuePriorities = nullptr,
 		VkDeviceQueueCreateFlags flags            = 0,
 		const void*              pNext            = nullptr
-	) {
-
-		VkDeviceQueueCreateInfo info = {
-
+	)
+	{
+		VkDeviceQueueCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
 			pNext,
 			flags,
 			queueFamilyIndex,
 			queueCount,
-			pQueuePriorities
+			pQueuePriorities,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkPipelineInputAssemblyStateCreateInfo PplInputAsm (
-
+	VkPipelineInputAssemblyStateCreateInfo PplInputAsm
+	(
 		VkPrimitiveTopology                     topology               = VK_PRIMITIVE_TOPOLOGY_POINT_LIST,
 		VkBool32                                primitiveRestartEnable = VK_FALSE,
 		VkPipelineInputAssemblyStateCreateFlags flags                  = 0,
 		const void*                             pNext                  = nullptr
-	) {
-
-		VkPipelineInputAssemblyStateCreateInfo info = {
-
+	)
+	{
+		VkPipelineInputAssemblyStateCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
 			pNext,
 			flags,
 			topology,
-			primitiveRestartEnable
+			primitiveRestartEnable,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkPipelineTessellationStateCreateInfo PplTess (
-
+	VkPipelineTessellationStateCreateInfo PplTess
+	(
 		uint32_t                               patchControlPoints = 0,
 		VkPipelineTessellationStateCreateFlags flags              = 0,
 		const void*                            pNext              = nullptr
-	) {
-
-		VkPipelineTessellationStateCreateInfo info = {
-
+	)
+	{
+		VkPipelineTessellationStateCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
 			pNext,
 			flags,
-			patchControlPoints
+			patchControlPoints,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkPipelineViewportStateCreateInfo PplView (
-
+	VkPipelineViewportStateCreateInfo PplView
+	(
 		uint32_t                           viewportCount = 0,
 		const VkViewport*                  pViewports    = nullptr,
 		uint32_t                           scissorCount  = 0,
 		const VkRect2D*                    pScissors     = nullptr,
 		VkPipelineViewportStateCreateFlags flags         = 0,
 		const void*                        pNext         = nullptr
-	) {
-
-		VkPipelineViewportStateCreateInfo info = {
-
+	)
+	{
+		VkPipelineViewportStateCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
 			pNext,
 			flags,
 			viewportCount,
 			pViewports,
 			scissorCount,
-			pScissors
+			pScissors,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkPipelineMultisampleStateCreateInfo PplSample (
-
+	VkPipelineMultisampleStateCreateInfo PplSample
+	(
 		VkSampleCountFlagBits                 rasterizationSamples  = VK_SAMPLE_COUNT_1_BIT,
 		VkBool32                              sampleShadingEnable   = VK_FALSE,
 		float                                 minSampleShading      = 0.0f,
@@ -745,10 +730,10 @@ namespace XGK::VULKAN {
 		VkBool32                              alphaToOneEnable      = VK_FALSE,
 		VkPipelineMultisampleStateCreateFlags flags                 = 0,
 		const void*                           pNext                 = nullptr
-	) {
-
-		VkPipelineMultisampleStateCreateInfo info = {
-
+	)
+	{
+		VkPipelineMultisampleStateCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
 			pNext,
 			flags,
@@ -761,12 +746,12 @@ namespace XGK::VULKAN {
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkPipelineRasterizationStateCreateInfo PplRast (
-
+	VkPipelineRasterizationStateCreateInfo PplRast
+	(
 		VkBool32                                depthClampEnable        = VK_FALSE,
 		VkBool32                                rasterizerDiscardEnable = VK_FALSE,
 		VkPolygonMode                           polygonMode             = VK_POLYGON_MODE_FILL,
@@ -779,10 +764,10 @@ namespace XGK::VULKAN {
 		float                                   lineWidth               = 1.0f,
 		VkPipelineRasterizationStateCreateFlags flags                   = 0,
 		const void*                             pNext                   = nullptr
-	) {
-
-		VkPipelineRasterizationStateCreateInfo info = {
-
+	)
+	{
+		VkPipelineRasterizationStateCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
 			pNext,
 			flags,
@@ -795,16 +780,16 @@ namespace XGK::VULKAN {
 			depthBiasConstantFactor,
 			depthBiasClamp,
 			depthBiasSlopeFactor,
-			lineWidth
+			lineWidth,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkPipelineDepthStencilStateCreateInfo PplDepthStenc (
-
+	VkPipelineDepthStencilStateCreateInfo PplDepthStenc
+	(
 		VkBool32                               depthTestEnable       = VK_FALSE,
 		VkBool32                               depthWriteEnable      = VK_FALSE,
 		VkCompareOp                            depthCompareOp        = VK_COMPARE_OP_NEVER,
@@ -816,10 +801,10 @@ namespace XGK::VULKAN {
 		float                                  maxDepthBounds        = 0.0f,
 		VkPipelineDepthStencilStateCreateFlags flags                 = 0,
 		const void*                            pNext                 = nullptr
-	) {
-
-		VkPipelineDepthStencilStateCreateInfo info = {
-
+	)
+	{
+		VkPipelineDepthStencilStateCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
 			pNext,
 			flags,
@@ -831,16 +816,16 @@ namespace XGK::VULKAN {
 			front,
 			back,
 			minDepthBounds,
-			maxDepthBounds
+			maxDepthBounds,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkPipelineColorBlendStateCreateInfo PplBlend (
-
+	VkPipelineColorBlendStateCreateInfo PplBlend
+	(
 		VkBool32                                   logicOpEnable    = VK_FALSE,
 		VkLogicOp                                  logicOp          = VK_LOGIC_OP_CLEAR,
 		uint32_t                                   attachmentCount  = 0,
@@ -851,10 +836,10 @@ namespace XGK::VULKAN {
 		float                                      blendConstants_3 = 0.0f,
 		VkPipelineColorBlendStateCreateFlags       flags            = 0,
 		const void*                                pNext            = nullptr
-	) {
-
-		VkPipelineColorBlendStateCreateInfo info = {
-
+	)
+	{
+		VkPipelineColorBlendStateCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
 			pNext,
 			flags,
@@ -865,90 +850,90 @@ namespace XGK::VULKAN {
 			blendConstants_0,
 			blendConstants_1,
 			blendConstants_2,
-			blendConstants_3
+			blendConstants_3,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkPipelineDynamicStateCreateInfo PplDyn (
-
+	VkPipelineDynamicStateCreateInfo PplDyn
+	(
 		uint32_t                          dynamicStateCount = 0,
 		const VkDynamicState*             pDynamicStates    = nullptr,
 		VkPipelineDynamicStateCreateFlags flags             = 0,
 		const void*                       pNext             = nullptr
-	) {
-
-		VkPipelineDynamicStateCreateInfo info = {
-
+	)
+	{
+		VkPipelineDynamicStateCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
 			pNext,
 			flags,
 			dynamicStateCount,
-			pDynamicStates
+			pDynamicStates,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkPipelineShaderStageCreateInfo PplShader (
-
+	VkPipelineShaderStageCreateInfo PplShader
+	(
 		VkShaderStageFlagBits            stage               = VK_SHADER_STAGE_VERTEX_BIT,
 		VkShaderModule                   module              = VK_NULL_HANDLE,
 		const char*                      pName               = "main",
 		const VkSpecializationInfo*      pSpecializationInfo = nullptr,
 		VkPipelineShaderStageCreateFlags flags               = 0,
 		const void*                      pNext               = nullptr
-	) {
-
-		VkPipelineShaderStageCreateInfo info = {
-
+	)
+	{
+		VkPipelineShaderStageCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 			pNext,
 			flags,
 			stage,
 			module,
 			pName,
-			pSpecializationInfo
+			pSpecializationInfo,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkPipelineVertexInputStateCreateInfo PplVertex (
-
+	VkPipelineVertexInputStateCreateInfo PplVertex
+	(
 		uint32_t                                 vertexBindingDescriptionCount   = 0,
 		const VkVertexInputBindingDescription*   pVertexBindingDescriptions      = nullptr,
 		uint32_t                                 vertexAttributeDescriptionCount = 0,
 		const VkVertexInputAttributeDescription* pVertexAttributeDescriptions    = nullptr,
 		VkPipelineVertexInputStateCreateFlags    flags                           = 0,
 		const void*                              pNext                           = nullptr
-	) {
-
-		VkPipelineVertexInputStateCreateInfo info = {
-
+	)
+	{
+		VkPipelineVertexInputStateCreateInfo info =
+		{
 			VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
 			pNext,
 			flags,
 			vertexBindingDescriptionCount,
 			pVertexBindingDescriptions,
 			vertexAttributeDescriptionCount,
-			pVertexAttributeDescriptions
+			pVertexAttributeDescriptions,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	VkWriteDescriptorSet WriteDescrSet (
-
+	VkWriteDescriptorSet WriteDescrSet
+	(
 		VkDescriptorSet               dstSet           = VK_NULL_HANDLE,
 		uint32_t                      dstBinding       = 0,
 		uint32_t                      dstArrayElement  = 0,
@@ -958,10 +943,10 @@ namespace XGK::VULKAN {
 		const VkDescriptorBufferInfo* pBufferInfo      = nullptr,
 		const VkBufferView*           pTexelBufferView = nullptr,
 		const void*                   pNext            = nullptr
-	) {
-
-		VkWriteDescriptorSet info = {
-
+	)
+	{
+		VkWriteDescriptorSet info =
+		{
 			VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
 			pNext,
 			dstSet,
@@ -971,62 +956,62 @@ namespace XGK::VULKAN {
 			descriptorType,
 			pImageInfo,
 			pBufferInfo,
-			pTexelBufferView
+			pTexelBufferView,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	INLINE VkCommandBufferBeginInfo CmdBufferBeginI (
-
+	INLINE VkCommandBufferBeginInfo CmdBufferBeginI
+	(
 		const VkCommandBufferInheritanceInfo* pInheritanceInfo = nullptr,
 		VkCommandBufferUsageFlags             flags            = 0,
 		const void*                           pNext            = nullptr
-	) {
-
-		VkCommandBufferBeginInfo info = {
-
+	)
+	{
+		VkCommandBufferBeginInfo info =
+		{
 			VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
 			pNext,
 			flags,
-			pInheritanceInfo
+			pInheritanceInfo,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	INLINE VkRenderPassBeginInfo RenderPassBeginI (
-
+	INLINE VkRenderPassBeginInfo RenderPassBeginI
+	(
 		VkRenderPass        renderPass      = VK_NULL_HANDLE,
 		VkFramebuffer       framebuffer     = VK_NULL_HANDLE,
-		VkRect2D            renderArea      = { 0 },
+		VkRect2D            renderArea      = {},
 		uint32_t            clearValueCount = 0,
 		const VkClearValue* pClearValues    = nullptr,
 		const void*         pNext           = nullptr
-	) {
-
-		VkRenderPassBeginInfo info = {
-
+	)
+	{
+		VkRenderPassBeginInfo info =
+		{
 			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
 			pNext,
 			renderPass,
 			framebuffer,
 			renderArea,
 			clearValueCount,
-			pClearValues
+			pClearValues,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	INLINE VkSubmitInfo SubmitI (
-
+	INLINE VkSubmitInfo SubmitI
+	(
 		uint32_t                    waitSemaphoreCount   = 0,
 		const VkSemaphore*          pWaitSemaphores      = nullptr,
 		const VkPipelineStageFlags* pWaitDstStageMask    = nullptr,
@@ -1035,10 +1020,10 @@ namespace XGK::VULKAN {
 		uint32_t                    signalSemaphoreCount = 0,
 		const VkSemaphore*          pSignalSemaphores    = nullptr,
 		const void*                 pNext                = nullptr
-	) {
-
-		VkSubmitInfo info = {
-
+	)
+	{
+		VkSubmitInfo info =
+		{
 			VK_STRUCTURE_TYPE_SUBMIT_INFO,
 			pNext,
 			waitSemaphoreCount,
@@ -1047,16 +1032,16 @@ namespace XGK::VULKAN {
 			commandBufferCount,
 			pCommandBuffers,
 			signalSemaphoreCount,
-			pSignalSemaphores
+			pSignalSemaphores,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	INLINE VkPresentInfoKHR PresentI (
-
+	INLINE VkPresentInfoKHR PresentI
+	(
 		uint32_t              waitSemaphoreCount = 0,
 		const VkSemaphore*    pWaitSemaphores    = nullptr,
 		uint32_t              swapchainCount     = 0,
@@ -1064,10 +1049,10 @@ namespace XGK::VULKAN {
 		const uint32_t*       pImageIndices      = nullptr,
 		VkResult*             pResults           = nullptr,
 		const void*           pNext              = nullptr
-	) {
-
-		VkPresentInfoKHR info = {
-
+	)
+	{
+		VkPresentInfoKHR info =
+		{
 			VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 			pNext,
 			waitSemaphoreCount,
@@ -1075,23 +1060,23 @@ namespace XGK::VULKAN {
 			swapchainCount,
 			pSwapchains,
 			pImageIndices,
-			pResults
+			pResults,
 		};
 
 		return info;
-	};
+	}
 
 
 
-	struct Device {
-
+	struct Device
+	{
 		VkDevice                         handle                      = VK_NULL_HANDLE;
 		uint32_t                         queue_family_prop_count     = 0;
 		VkQueueFamilyProperties*         queue_family_props          = nullptr;
 		uint32_t                         surface_format_count        = 0;
 		VkSurfaceFormatKHR*              surface_formats             = nullptr;
-		VkPhysicalDeviceMemoryProperties mem_props                   = { 0 };
-		VkSurfaceCapabilitiesKHR         surface_capabilities        = { 0 };
+		VkPhysicalDeviceMemoryProperties mem_props                   = {};
+		VkSurfaceCapabilitiesKHR         surface_capabilities        = {};
 		uint32_t                         graphics_queue_family_index = -1;
 		uint64_t                         graphics_queue_count        = 0;
 		uint32_t                         present_queue_family_index  = -1;
@@ -1115,8 +1100,8 @@ namespace XGK::VULKAN {
 
 
 
-		void getProps (VkPhysicalDevice physical_device, VkSurfaceKHR surface) {
-
+		void getProps (VkPhysicalDevice physical_device, VkSurfaceKHR surface)
+		{
 			vkGetPhysicalDeviceQueueFamilyProperties(physical_device, &queue_family_prop_count, nullptr);
 			queue_family_props = new VkQueueFamilyProperties[queue_family_prop_count];
 			vkGetPhysicalDeviceQueueFamilyProperties(physical_device, &queue_family_prop_count, queue_family_props);
@@ -1127,7 +1112,7 @@ namespace XGK::VULKAN {
 
 			vkGetPhysicalDeviceMemoryProperties(physical_device, &mem_props);
 
-			// for (uint64_t i = 0; i < mem_props.memoryTypeCount; i++) {
+			// for (uint64_t i = 0; i < mem_props.memoryTypeCount; ++i) {
 
 			//   VkMemoryType type = mem_props.memoryTypes[i];
 
@@ -1178,7 +1163,7 @@ namespace XGK::VULKAN {
 
 			// std::cout << std::endl << std::endl;
 
-			// for (uint64_t i = 0; i < mem_props.memoryHeapCount; i++) {
+			// for (uint64_t i = 0; i < mem_props.memoryHeapCount; ++i) {
 
 			//   VkMemoryHeap heap = mem_props.memoryHeaps[i];
 
@@ -1214,20 +1199,20 @@ namespace XGK::VULKAN {
 			// std::cout << "queue family properties count: " << queue_family_prop_count << std::endl;
 			// std::cout << std::endl << std::endl;
 
-			for (uint64_t i = 0; i < queue_family_prop_count; i++) {
-
+			for (uint64_t i = 0; i < queue_family_prop_count; ++i)
+			{
 				VkBool32 surface_support = VK_FALSE;
 
 				vkGetPhysicalDeviceSurfaceSupportKHR(physical_device, i, surface, &surface_support);
 
-				if (queue_family_props[i].queueFlags & VK_QUEUE_GRAPHICS_BIT || 0) {
-
+				if (queue_family_props[i].queueFlags & VK_QUEUE_GRAPHICS_BIT || 0)
+				{
 					graphics_queue_family_index = i;
 					graphics_queue_count = queue_family_props[i].queueCount;
 				}
 
-				if (surface_support) {
-
+				if (surface_support)
+				{
 					present_queue_family_index = i;
 					present_queue_count = queue_family_props[i].queueCount;
 				}
@@ -1249,10 +1234,10 @@ namespace XGK::VULKAN {
 			}
 
 			// throw "";
-		};
+		}
 
-		void create (
-
+		void create
+		(
 			VkPhysicalDevice                physical_device,
 			uint32_t                        queueCreateInfoCount    = 0,
 			const VkDeviceQueueCreateInfo*  pQueueCreateInfos       = nullptr,
@@ -1264,10 +1249,10 @@ namespace XGK::VULKAN {
 			VkDeviceCreateFlags             flags                   = 0,
 			const void*                     pNext                   = nullptr,
 			const VkAllocationCallbacks*    pAllocator              = nullptr
-		) {
-
-			VkDeviceCreateInfo info = {
-
+		)
+		{
+			VkDeviceCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
 				pNext,
 				flags,
@@ -1277,39 +1262,38 @@ namespace XGK::VULKAN {
 				ppEnabledLayerNames,
 				enabledExtensionCount,
 				ppEnabledExtensionNames,
-				pEnabledFeatures
+				pEnabledFeatures,
 			};
 
 			vkCreateDevice(physical_device, &info, pAllocator, &handle);
 
 			loadDeviceFunctions(handle);
-		};
+		}
 
-		VkQueue Queue (uint32_t queueFamilyIndex, uint32_t queueIndex) {
-
+		VkQueue Queue (uint32_t queueFamilyIndex, uint32_t queueIndex)
+		{
 			VkQueue queue = VK_NULL_HANDLE;
 
 			vkGetDeviceQueue(handle, queueFamilyIndex, queueIndex, &queue);
 
 			return queue;
-		};
+		}
 
-		VkRenderPass RenderPass (
-
+		VkRenderPass RenderPass
+		(
 			uint32_t                       attachmentCount = 0,
 			const VkAttachmentDescription* pAttachments    = nullptr,
 			uint32_t                       subpassCount    = 0,
 			const VkSubpassDescription*    pSubpasses      = nullptr,
 			uint32_t                       dependencyCount = 0,
 			const VkSubpassDependency*     pDependencies   = nullptr,
-			uint32_t                       layers          = 0,
 			VkRenderPassCreateFlags        flags           = 0,
 			const void*                    pNext           = nullptr,
 			const VkAllocationCallbacks*   pAllocator      = nullptr
-		) {
-
-			VkRenderPassCreateInfo info = {
-
+		)
+		{
+			VkRenderPassCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
 				pNext,
 				flags,
@@ -1318,7 +1302,7 @@ namespace XGK::VULKAN {
 				subpassCount,
 				pSubpasses,
 				dependencyCount,
-				pDependencies
+				pDependencies,
 			};
 
 			VkRenderPass render_pass = VK_NULL_HANDLE;
@@ -1328,10 +1312,10 @@ namespace XGK::VULKAN {
 			render_passes.push_back(render_pass);
 
 			return render_pass;
-		};
+		}
 
-		VkSwapchainKHR SwapchainKHR (
-
+		VkSwapchainKHR SwapchainKHR
+		(
 			VkSurfaceKHR                  surface               = VK_NULL_HANDLE,
 			uint32_t                      minImageCount         = 0,
 			VkFormat                      imageFormat           = VK_FORMAT_B8G8R8A8_UNORM,
@@ -1351,10 +1335,10 @@ namespace XGK::VULKAN {
 			VkSwapchainCreateFlagsKHR     flags                 = 0,
 			const void*                   pNext                 = nullptr,
 			const VkAllocationCallbacks*  pAllocator            = nullptr
-		) {
-
-			VkSwapchainCreateInfoKHR info = {
-
+		)
+		{
+			VkSwapchainCreateInfoKHR info =
+			{
 				VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
 				pNext,
 				flags,
@@ -1362,10 +1346,12 @@ namespace XGK::VULKAN {
 				minImageCount,
 				imageFormat,
 				imageColorSpace,
+
 				{
 					imageExtent_width,
-					imageExtent_height
+					imageExtent_height,
 				},
+
 				imageArrayLayers,
 				imageUsage,
 				imageSharingMode,
@@ -1375,7 +1361,7 @@ namespace XGK::VULKAN {
 				compositeAlpha,
 				presentMode,
 				clipped,
-				oldSwapchain
+				oldSwapchain,
 			};
 
 			VkSwapchainKHR swapchain = VK_NULL_HANDLE;
@@ -1385,10 +1371,10 @@ namespace XGK::VULKAN {
 			swapchains.push_back(swapchain);
 
 			return swapchain;
-		};
+		}
 
-		std::vector<VkImage> getSwapchainImages (VkSwapchainKHR swapchain) {
-
+		std::vector<VkImage> getSwapchainImages (VkSwapchainKHR swapchain)
+		{
 			uint32_t count = 0;
 
 			vkGetSwapchainImagesKHR(handle, swapchain, &count, nullptr);
@@ -1396,10 +1382,10 @@ namespace XGK::VULKAN {
 			vkGetSwapchainImagesKHR(handle, swapchain, &count, images.data());
 
 			return images;
-		};
+		}
 
-		VkImage Image (
-
+		VkImage Image
+		(
 			VkImageType                  imageType             = VK_IMAGE_TYPE_2D,
 			VkFormat                     format                = VK_FORMAT_B8G8R8A8_UNORM,
 			uint32_t                     extent_width          = 0,
@@ -1417,20 +1403,22 @@ namespace XGK::VULKAN {
 			VkImageCreateFlags           flags                 = 0,
 			const void*                  pNext                 = nullptr,
 			const VkAllocationCallbacks* pAllocator            = nullptr
-		) {
-
-			VkImageCreateInfo info = {
-
+		)
+		{
+			VkImageCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
 				pNext,
 				flags,
 				imageType,
 				format,
+
 				{
 					extent_width,
 					extent_height,
 					extent_depth,
 				},
+
 				mipLevels,
 				arrayLayers,
 				samples,
@@ -1439,7 +1427,7 @@ namespace XGK::VULKAN {
 				sharingMode,
 				queueFamilyIndexCount,
 				pQueueFamilyIndices,
-				initialLayout
+				initialLayout,
 			};
 
 			VkImage image = VK_NULL_HANDLE;
@@ -1449,10 +1437,10 @@ namespace XGK::VULKAN {
 			images.push_back(image);
 
 			return image;
-		};
+		}
 
-		VkImageView ImageView (
-
+		VkImageView ImageView
+		(
 			VkImage                      image                           = VK_NULL_HANDLE,
 			VkImageViewType              viewType                        = VK_IMAGE_VIEW_TYPE_2D,
 			VkFormat                     format                          = VK_FORMAT_B8G8R8A8_UNORM,
@@ -1468,28 +1456,30 @@ namespace XGK::VULKAN {
 			VkImageViewCreateFlags       flags                           = 0,
 			const void*                  pNext                           = nullptr,
 			const VkAllocationCallbacks* pAllocator                      = nullptr
-		) {
-
-			VkImageViewCreateInfo info = {
-
+		)
+		{
+			VkImageViewCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 				pNext,
 				flags,
 				image,
 				viewType,
 				format,
+
 				{
 					compenents_r,
 					compenents_g,
 					compenents_b,
-					compenents_a
+					compenents_a,
 				},
+
 				{
 					subresourceRange_aspectMask,
 					subresourceRange_baseMipLevel,
 					subresourceRange_levelCount,
 					subresourceRange_baseArrayLayer,
-					subresourceRange_layerCount
+					subresourceRange_layerCount,
 				}
 			};
 
@@ -1500,57 +1490,57 @@ namespace XGK::VULKAN {
 			image_views.push_back(image_view);
 
 			return image_view;
-		};
+		}
 
-		VkMemoryRequirements MemReqs (VkImage image) {
-
+		VkMemoryRequirements MemReqs (VkImage image)
+		{
 			VkMemoryRequirements reqs;
 
 			vkGetImageMemoryRequirements(handle, image, &reqs);
 
 			return reqs;
-		};
+		}
 
-		VkMemoryRequirements MemReqs (VkBuffer buffer) {
-
+		VkMemoryRequirements MemReqs (VkBuffer buffer)
+		{
 			VkMemoryRequirements reqs;
 
 			vkGetBufferMemoryRequirements(handle, buffer, &reqs);
 
 			return reqs;
-		};
+		}
 
-		uint32_t getMemTypeIndex (VkMemoryRequirements* mem_reqs, VkMemoryPropertyFlags flags) {
-
+		uint32_t getMemTypeIndex (VkMemoryRequirements* mem_reqs, VkMemoryPropertyFlags flags)
+		{
 			uint32_t mem_type_count = mem_props.memoryTypeCount;
 
-			for (uint32_t i = 0; i < mem_type_count; i++) {
-
+			for (uint32_t i = 0; i < mem_type_count; ++i)
+			{
 				uint32_t match = (mem_reqs->memoryTypeBits & (1 << i)) && (mem_props.memoryTypes[i].propertyFlags & flags);
 
-				if (match) {
-
+				if (match)
+				{
 					return i;
-				};
+				}
 			}
 
 			return -1;
-		};
+		}
 
-		VkDeviceMemory Mem (
-
+		VkDeviceMemory Mem
+		(
 			VkDeviceSize                 allocationSize  = 0,
 			uint32_t                     memoryTypeIndex = 0,
 			const void*                  pNext           = nullptr,
 			const VkAllocationCallbacks* pAllocator      = nullptr
-		) {
-
-			VkMemoryAllocateInfo info = {
-
+		)
+		{
+			VkMemoryAllocateInfo info =
+			{
 				VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 				pNext,
 				allocationSize,
-				memoryTypeIndex
+				memoryTypeIndex,
 			};
 
 			VkDeviceMemory mem = VK_NULL_HANDLE;
@@ -1560,29 +1550,29 @@ namespace XGK::VULKAN {
 			memories.push_back(mem);
 
 			return mem;
-		};
+		}
 
-		void bindMem (VkImage image, VkDeviceMemory mem, VkDeviceSize offset = 0) {
-
+		void bindMem (VkImage image, VkDeviceMemory mem, VkDeviceSize offset = 0)
+		{
 			vkBindImageMemory(handle, image, mem, offset);
-		};
+		}
 
-		void bindMem (VkBuffer buffer, VkDeviceMemory mem, VkDeviceSize offset = 0) {
-
+		void bindMem (VkBuffer buffer, VkDeviceMemory mem, VkDeviceSize offset = 0)
+		{
 			vkBindBufferMemory(handle, buffer, mem, offset);
-		};
+		}
 
-		void* mapMem (VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags) {
-
+		void* mapMem (VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags)
+		{
 			void* mem_addr = nullptr;
 
 			vkMapMemory(handle, memory, offset, size, flags, &mem_addr);
 
 			return mem_addr;
-		};
+		}
 
-		VkFramebuffer Framebuffer (
-
+		VkFramebuffer Framebuffer
+		(
 			VkRenderPass                 renderPass      = VK_NULL_HANDLE,
 			uint32_t                     attachmentCount = 0,
 			const VkImageView*           pAttachments    = nullptr,
@@ -1592,10 +1582,10 @@ namespace XGK::VULKAN {
 			VkFramebufferCreateFlags     flags           = 0,
 			const void*                  pNext           = nullptr,
 			const VkAllocationCallbacks* pAllocator      = nullptr
-		) {
-
-			VkFramebufferCreateInfo info = {
-
+		)
+		{
+			VkFramebufferCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
 				pNext,
 				flags,
@@ -1604,7 +1594,7 @@ namespace XGK::VULKAN {
 				pAttachments,
 				width,
 				height,
-				layers
+				layers,
 			};
 
 			VkFramebuffer framebuffer = VK_NULL_HANDLE;
@@ -1614,20 +1604,20 @@ namespace XGK::VULKAN {
 			framebuffers.push_back(framebuffer);
 
 			return framebuffer;
-		};
+		}
 
-		VkFence Fence (
-
+		VkFence Fence
+		(
 			VkFenceCreateFlags           flags      = 0,
 			const void*                  pNext      = nullptr,
 			const VkAllocationCallbacks* pAllocator = nullptr
-		) {
-
-			VkFenceCreateInfo info = {
-
+		)
+		{
+			VkFenceCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
 				pNext,
-				flags
+				flags,
 			};
 
 			VkFence fence = VK_NULL_HANDLE;
@@ -1637,17 +1627,17 @@ namespace XGK::VULKAN {
 			fences.push_back(fence);
 
 			return fence;
-		};
+		}
 
-		VkSemaphore Semaphore (
-
+		VkSemaphore Semaphore
+		(
 			VkSemaphoreCreateFlags       flags      = 0,
 			const void*                  pNext      = nullptr,
 			const VkAllocationCallbacks* pAllocator = nullptr
-		) {
-
-			VkSemaphoreCreateInfo info = {
-
+		)
+		{
+			VkSemaphoreCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
 				pNext,
 				flags,
@@ -1660,10 +1650,10 @@ namespace XGK::VULKAN {
 			semaphores.push_back(semaphore);
 
 			return semaphore;
-		};
+		}
 
-		VkBuffer Buffer (
-
+		VkBuffer Buffer
+		(
 			VkDeviceSize                 size                  = 0,
 			VkBufferUsageFlags           usage                 = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 			VkSharingMode                sharingMode           = VK_SHARING_MODE_EXCLUSIVE,
@@ -1672,10 +1662,10 @@ namespace XGK::VULKAN {
 			VkBufferCreateFlags          flags                 = 0,
 			const void*                  pNext                 = nullptr,
 			const VkAllocationCallbacks* pAllocator            = nullptr
-		) {
-
-			VkBufferCreateInfo info = {
-
+		)
+		{
+			VkBufferCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 				pNext,
 				flags,
@@ -1683,7 +1673,7 @@ namespace XGK::VULKAN {
 				usage,
 				sharingMode,
 				queueFamilyIndexCount,
-				pQueueFamilyIndices
+				pQueueFamilyIndices,
 			};
 
 			VkBuffer buffer = VK_NULL_HANDLE;
@@ -1693,24 +1683,24 @@ namespace XGK::VULKAN {
 			buffers.push_back(buffer);
 
 			return buffer;
-		};
+		}
 
-		VkDescriptorSetLayout DescrSetLayout (
-
+		VkDescriptorSetLayout DescrSetLayout
+		(
 			uint32_t                            bindingCount = 0,
 			const VkDescriptorSetLayoutBinding* pBindings    = nullptr,
 			VkDescriptorSetLayoutCreateFlags    flags        = 0,
 			const void*                         pNext        = nullptr,
 			const VkAllocationCallbacks*        pAllocator   = nullptr
-		) {
-
-			VkDescriptorSetLayoutCreateInfo info = {
-
+		)
+		{
+			VkDescriptorSetLayoutCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
 				pNext,
 				flags,
 				bindingCount,
-				pBindings
+				pBindings,
 			};
 
 			VkDescriptorSetLayout layout = VK_NULL_HANDLE;
@@ -1720,82 +1710,88 @@ namespace XGK::VULKAN {
 			descr_set_layouts.push_back(layout);
 
 			return layout;
-		};
+		}
 
-		VkDescriptorPool DescrPool (
-
+		VkDescriptorPool DescrPool
+		(
 			uint32_t                     maxSets       = 0,
 			uint32_t                     poolSizeCount = 0,
 			const VkDescriptorPoolSize*  pPoolSizes    = nullptr,
 			VkDescriptorPoolCreateFlags  flags         = 0,
 			const void*                  pNext         = nullptr,
 			const VkAllocationCallbacks* pAllocator    = nullptr
-		) {
-
-			VkDescriptorPoolCreateInfo info = {
-
+		)
+		{
+			VkDescriptorPoolCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 				pNext,
 				flags,
 				maxSets,
 				poolSizeCount,
-				pPoolSizes
+				pPoolSizes,
 			};
 
 			VkDescriptorPool pool = VK_NULL_HANDLE;
 
-			vkCreateDescriptorPool(handle, &info, pAllocator, &pool);
+			cout << vkCreateDescriptorPool(handle, &info, pAllocator, &pool) << endl;
 
 			descr_pools.push_back(pool);
 
 			return pool;
-		};
+		}
 
-		std::vector<VkDescriptorSet> DescrSet (
-
+		std::vector<VkDescriptorSet> DescrSet
+		(
 			VkDescriptorPool             descriptorPool        = VK_NULL_HANDLE,
 			uint32_t                     descriptorSetCount    = 0,
 			const VkDescriptorSetLayout* pSetdescr_set_layouts = nullptr,
 			const void*                  pNext                 = nullptr
-		) {
-
-			VkDescriptorSetAllocateInfo info = {
-
+		)
+		{
+			VkDescriptorSetAllocateInfo info =
+			{
 				VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
 				pNext,
 				descriptorPool,
 				descriptorSetCount,
-				pSetdescr_set_layouts
+				pSetdescr_set_layouts,
 			};
 
 			std::vector<VkDescriptorSet> sets(descriptorSetCount);
 
-			vkAllocateDescriptorSets(handle, &info, sets.data());
+			cout << vkAllocateDescriptorSets(handle, &info, sets.data()) << endl;
 
 			return sets;
-		};
+		}
 
-		void updateDescrSets (uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites, uint32_t descriptorCopyCount, const VkCopyDescriptorSet* pDescriptorCopies) {
-
+		void updateDescrSets
+		(
+			uint32_t descriptorWriteCount,
+			const VkWriteDescriptorSet* pDescriptorWrites,
+			uint32_t descriptorCopyCount,
+			const VkCopyDescriptorSet* pDescriptorCopies
+		)
+		{
 			vkUpdateDescriptorSets(handle, descriptorWriteCount, pDescriptorWrites, descriptorCopyCount, pDescriptorCopies);
-		};
+		}
 
-		VkShaderModule Shader (
-
+		VkShaderModule Shader
+		(
 			size_t                       codeSize   = 0,
 			const uint32_t*              pCode      = nullptr,
 			VkShaderModuleCreateFlags    flags      = 0,
 			const void*                  pNext      = nullptr,
 			const VkAllocationCallbacks* pAllocator = nullptr
-		) {
-
-			VkShaderModuleCreateInfo info = {
-
+		)
+		{
+			VkShaderModuleCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
 				pNext,
 				flags,
 				codeSize,
-				pCode
+				pCode,
 			};
 
 			VkShaderModule module = VK_NULL_HANDLE;
@@ -1805,10 +1801,10 @@ namespace XGK::VULKAN {
 			shader_modules.push_back(module);
 
 			return module;
-		};
+		}
 
-		VkPipelineLayout PplLayout (
-
+		VkPipelineLayout PplLayout
+		(
 			uint32_t                     setLayoutCount         = 0,
 			const VkDescriptorSetLayout* pSetdescr_set_layouts  = nullptr,
 			uint32_t                     pushConstantRangeCount = 0,
@@ -1816,17 +1812,17 @@ namespace XGK::VULKAN {
 			VkPipelineLayoutCreateFlags  flags                  = 0,
 			const void*                  pNext                  = nullptr,
 			const VkAllocationCallbacks* pAllocator             = nullptr
-		) {
-
-			VkPipelineLayoutCreateInfo info = {
-
+		)
+		{
+			VkPipelineLayoutCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 				pNext,
 				flags,
 				setLayoutCount,
 				pSetdescr_set_layouts,
 				pushConstantRangeCount,
-				pPushConstantRanges
+				pPushConstantRanges,
 			};
 
 			VkPipelineLayout layout = VK_NULL_HANDLE;
@@ -1836,10 +1832,10 @@ namespace XGK::VULKAN {
 			ppl_layouts.push_back(layout);
 
 			return layout;
-		};
+		}
 
-		VkPipeline PplG (
-
+		VkPipeline PplG
+		(
 			uint32_t                                      stageCount          = 0,
 			const VkPipelineShaderStageCreateInfo*        pStages             = nullptr,
 			const VkPipelineVertexInputStateCreateInfo*   pVertexInputState   = nullptr,
@@ -1860,10 +1856,10 @@ namespace XGK::VULKAN {
 			const void*                                   pNext               = nullptr,
 			VkPipelineCache                               pipelineCache       = VK_NULL_HANDLE,
 			const VkAllocationCallbacks*                  pAllocator          = nullptr
-		) {
-
-			VkGraphicsPipelineCreateInfo info = {
-
+		)
+		{
+			VkGraphicsPipelineCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
 				pNext,
 				flags,
@@ -1882,7 +1878,7 @@ namespace XGK::VULKAN {
 				renderPass,
 				subpass,
 				basePipelineHandle,
-				basePipelineIndex
+				basePipelineIndex,
 			};
 
 			VkPipeline pipeline = VK_NULL_HANDLE;
@@ -1892,22 +1888,22 @@ namespace XGK::VULKAN {
 			pipelines.push_back(pipeline);
 
 			return pipeline;
-		};
+		}
 
-		VkCommandPool CmdPool (
-
+		VkCommandPool CmdPool
+		(
 			uint32_t                     queueFamilyIndex = 0,
 			VkCommandPoolCreateFlags     flags            = 0,
 			const void*                  pNext            = nullptr,
 			const VkAllocationCallbacks* pAllocator       = nullptr
-		) {
-
-			VkCommandPoolCreateInfo info = {
-
+		)
+		{
+			VkCommandPoolCreateInfo info =
+			{
 				VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
 				pNext,
 				flags,
-				queueFamilyIndex
+				queueFamilyIndex,
 			};
 
 			VkCommandPool pool = VK_NULL_HANDLE;
@@ -1917,23 +1913,23 @@ namespace XGK::VULKAN {
 			cmd_pools.push_back(pool);
 
 			return pool;
-		};
+		}
 
-		std::vector<VkCommandBuffer> CmdBuffer (
-
+		std::vector<VkCommandBuffer> CmdBuffer
+		(
 			VkCommandPool        commandPool        = VK_NULL_HANDLE,
 			VkCommandBufferLevel level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
 			uint32_t             commandBufferCount = 0,
 			const void*          pNext              = nullptr
-		) {
-
-			VkCommandBufferAllocateInfo info = {
-
+		)
+		{
+			VkCommandBufferAllocateInfo info =
+			{
 				VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
 				pNext,
 				commandPool,
 				level,
-				commandBufferCount
+				commandBufferCount,
 			};
 
 			std::vector<VkCommandBuffer> buffers(commandBufferCount);
@@ -1941,122 +1937,122 @@ namespace XGK::VULKAN {
 			vkAllocateCommandBuffers(handle, &info, buffers.data());
 
 			return buffers;
-		};
+		}
 
-		void destroy (void) {
-
+		void destroy (void)
+		{
 			delete[] surface_formats;
 			delete[] queue_family_props;
 
-			for (uint64_t i = 0; i < render_passes.size(); i++) {
-
+			for (uint64_t i = 0; i < render_passes.size(); ++i)
+			{
 				vkDestroyRenderPass(handle, render_passes[i], nullptr);
 			}
 
 			render_passes.resize(0);
 
-			for (uint64_t i = 0; i < swapchains.size(); i++) {
-
+			for (uint64_t i = 0; i < swapchains.size(); ++i)
+			{
 				vkDestroySwapchainKHR(handle, swapchains[i], nullptr);
 			}
 
 			swapchains.resize(0);
 
-			for (uint64_t i = 0; i < image_views.size(); i++) {
-
+			for (uint64_t i = 0; i < image_views.size(); ++i)
+			{
 				vkDestroyImageView(handle, image_views[i], nullptr);
 			}
 
 			image_views.resize(0);
 
-			for (uint64_t i = 0; i < images.size(); i++) {
-
+			for (uint64_t i = 0; i < images.size(); ++i)
+			{
 				vkDestroyImage(handle, images[i], nullptr);
 			}
 
 			images.resize(0);
 
-			for (uint64_t i = 0; i < memories.size(); i++) {
-
+			for (uint64_t i = 0; i < memories.size(); ++i)
+			{
 				vkFreeMemory(handle, memories[i], nullptr);
 			}
 
 			memories.resize(0);
 
-			for (uint64_t i = 0; i < framebuffers.size(); i++) {
-
+			for (uint64_t i = 0; i < framebuffers.size(); ++i)
+			{
 				vkDestroyFramebuffer(handle, framebuffers[i], nullptr);
 			}
 
 			framebuffers.resize(0);
 
-			for (uint64_t i = 0; i < fences.size(); i++) {
-
+			for (uint64_t i = 0; i < fences.size(); ++i)
+			{
 				vkDestroyFence(handle, fences[i], nullptr);
 			}
 
 			fences.resize(0);
 
-			for (uint64_t i = 0; i < semaphores.size(); i++) {
-
+			for (uint64_t i = 0; i < semaphores.size(); ++i)
+			{
 				vkDestroySemaphore(handle, semaphores[i], nullptr);
 			}
 
 			semaphores.resize(0);
 
-			for (uint64_t i = 0; i < buffers.size(); i++) {
-
+			for (uint64_t i = 0; i < buffers.size(); ++i)
+			{
 				vkDestroyBuffer(handle, buffers[i], nullptr);
 			}
 
 			buffers.resize(0);
 
-			for (uint64_t i = 0; i < descr_set_layouts.size(); i++) {
-
+			for (uint64_t i = 0; i < descr_set_layouts.size(); ++i)
+			{
 				vkDestroyDescriptorSetLayout(handle, descr_set_layouts[i], nullptr);
 			}
 
 			descr_set_layouts.resize(0);
 
-			for (uint64_t i = 0; i < ppl_layouts.size(); i++) {
-
+			for (uint64_t i = 0; i < ppl_layouts.size(); ++i)
+			{
 				vkDestroyPipelineLayout(handle, ppl_layouts[i], nullptr);
 			}
 
 			ppl_layouts.resize(0);
 
-			for (uint64_t i = 0; i < descr_pools.size(); i++) {
-
+			for (uint64_t i = 0; i < descr_pools.size(); ++i)
+			{
 				vkDestroyDescriptorPool(handle, descr_pools[i], nullptr);
 			}
 
 			descr_pools.resize(0);
 
-			for (uint64_t i = 0; i < shader_modules.size(); i++) {
-
+			for (uint64_t i = 0; i < shader_modules.size(); ++i)
+			{
 				vkDestroyShaderModule(handle, shader_modules[i], nullptr);
 			}
 
 			shader_modules.resize(0);
 
-			for (uint64_t i = 0; i < pipelines.size(); i++) {
-
+			for (uint64_t i = 0; i < pipelines.size(); ++i)
+			{
 				vkDestroyPipeline(handle, pipelines[i], nullptr);
 			}
 
 			pipelines.resize(0);
 
-			for (uint64_t i = 0; i < cmd_pools.size(); i++) {
-
+			for (uint64_t i = 0; i < cmd_pools.size(); ++i)
+			{
 				vkDestroyCommandPool(handle, cmd_pools[i], nullptr);
 			}
 
 			cmd_pools.resize(0);
 
 			vkDestroyDevice(handle, nullptr);
-		};
+		}
 	};
-};
+}
 
 
 

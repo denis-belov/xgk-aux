@@ -26,7 +26,7 @@ namespace XGK {
 		}
 
 		TransitionStack::array[TransitionStack::index]->push(transition);
-	};
+	}
 
 
 
@@ -34,7 +34,7 @@ namespace XGK {
 
 		id = TransitionStack::size++;
 
-		cout << id << endl;
+		// cout << "created " << id << endl;
 
 		length = 0;
 		counter = 0;
@@ -48,7 +48,12 @@ namespace XGK {
 
 		TransitionStack::vector.push_back(this);
 		TransitionStack::array = TransitionStack::vector.data();
-	};
+	}
+
+	TransitionStack::~TransitionStack (void) {
+
+		// cout << "destroyed " << id << endl;
+	}
 
 
 	void TransitionStack::update (void) {
@@ -57,7 +62,7 @@ namespace XGK {
 
 			static_storage[counter]->update(frame_time);
 		}
-	};
+	}
 
 	void TransitionStack::push (Transition* transition) {
 
@@ -67,12 +72,12 @@ namespace XGK {
 		static_storage[length] = transition;
 
 		++length;
-	};
+	}
 
 	void TransitionStack::calculateFrametime (void) {
 
 		program_time = std::chrono::system_clock::now();
 		frame_time = std::chrono::duration_cast<std::chrono::nanoseconds>(program_time - last_program_time).count();
 		last_program_time = program_time;
-	};
-};
+	}
+}

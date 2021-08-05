@@ -24,7 +24,7 @@ namespace XGK {
       DATA::MAT4::ident(orbit_addr->view_mat);
 
       OBJECT::init(orbit_addr->object);
-    };
+    }
 
 
 
@@ -34,7 +34,7 @@ namespace XGK {
 
       DATA::MAT4::invns(orbit_addr->object);
       DATA::MAT4::copy(orbit_addr, orbit_addr->object);
-    };
+    }
 
 
 
@@ -44,7 +44,7 @@ namespace XGK {
 
       OBJECT::postRotX(orbit_addr->object, orbit_addr->speed_x);
       OBJECT::preRotY(orbit_addr->object, orbit_addr->speed_y);
-    };
+    }
 
 
 
@@ -59,7 +59,7 @@ namespace XGK {
 
     //   orbit_addr->speed_x = temp;
     //   orbit_addr->speed_y = temp;
-    // };
+    // }
 
 
 
@@ -68,6 +68,6 @@ namespace XGK {
       memcpy(orbit_addr->prev_quat, orbit_addr->object->quat, 16);
 
       TIME::setTransition2(time, orbit_addr->transition, 1000.0f, test);
-    };
-  };
-};
+    }
+  }
+}

@@ -53,4 +53,4 @@ namespace XGK {
       inline void update (Orbit*);
     };
   #endif
-};
+}

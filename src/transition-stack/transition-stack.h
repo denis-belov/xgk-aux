@@ -30,8 +30,9 @@ namespace XGK {
 		Transition** static_storage;
 
 		TransitionStack (const uint64_t);
+		~TransitionStack (void);
 		void update (void);
 		void push (Transition*);
 		void calculateFrametime (void);
 	};
-};
+}

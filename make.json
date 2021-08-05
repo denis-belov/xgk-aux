@@ -1,0 +1,42 @@
+{
+	"type": "static",
+
+	"target": "xgk-aux",
+
+	"includes": "$(SRC)",
+
+	"objects":
+	{
+		"internal":
+		{
+			"cpp":
+			[
+				{
+					"source": "$(SRC)/transition/transition.cpp",
+
+					"options":
+					{
+						"headers":
+						[
+							"$(SRC)/transition-stack/transition-stack.h",
+							"$(SRC)/transition/transition.h"
+						]
+					}
+				},
+
+				{
+					"source": "$(SRC)/transition-stack/transition-stack.cpp",
+
+					"options":
+					{
+						"headers":
+						[
+							"$(SRC)/transition-stack/transition-stack.h",
+							"$(SRC)/transition/transition.h"
+						]
+					}
+				}
+			]
+		}
+	}
+}
