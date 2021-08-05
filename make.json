@@ -1,11 +1,11 @@
 {
-	"type": "static",
+	"build_type": "static",
 
-	"target": "xgk-aux",
+	"target_name": "xgk-aux",
 
-	"includes": "$(SRC)",
+	"include_directories": "$(SRC)",
 
-	"objects":
+	"source_files":
 	{
 		"internal":
 		{
