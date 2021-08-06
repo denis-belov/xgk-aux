@@ -1734,7 +1734,8 @@ namespace XGK::VULKAN
 
 			VkDescriptorPool pool = VK_NULL_HANDLE;
 
-			cout << vkCreateDescriptorPool(handle, &info, pAllocator, &pool) << endl;
+			vkCreateDescriptorPool(handle, &info, pAllocator, &pool);
+			// cout << vkCreateDescriptorPool(handle, &info, pAllocator, &pool) << endl;
 
 			descr_pools.push_back(pool);
 
@@ -1760,7 +1761,8 @@ namespace XGK::VULKAN
 
 			std::vector<VkDescriptorSet> sets(descriptorSetCount);
 
-			cout << vkAllocateDescriptorSets(handle, &info, sets.data()) << endl;
+			vkAllocateDescriptorSets(handle, &info, sets.data());
+			// cout << vkAllocateDescriptorSets(handle, &info, sets.data()) << endl;
 
 			return sets;
 		}
