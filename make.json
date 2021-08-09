@@ -12,6 +12,11 @@
 			"cpp":
 			[
 				{
+					"source": "$(SRC)/meas/meas.cpp",
+					"headers": "$(SRC)/meas/meas.h"
+				},
+
+				{
 					"source": "$(SRC)/transition/transition.cpp",
 
 					"headers":
