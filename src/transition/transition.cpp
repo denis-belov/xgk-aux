@@ -1,19 +1,21 @@
+#include <iostream>
+
 #include "transition-stack/transition-stack.h"
 #include "transition.h"
 
-#include <iostream>
+
 
 using std::cout;
 using std::endl;
 
-namespace XGK {
+namespace XGK
+{
+	void idle_function (const float&) {}
 
-	void idle_function (const float) {}
 
 
-
-	void Transition::cancel (void) {
-
+	void Transition::cancel (void)
+	{
 		cout << "cancel" << endl;
 
 		TransitionStack* stack = TransitionStack::array[stack_id];
@@ -24,12 +26,12 @@ namespace XGK {
 		stack->static_storage[stack->length] = nullptr;
 	}
 
-	void Transition::cancel2 (void) {
-
+	void Transition::cancel2 (void)
+	{
 		cout << "cancel2" << endl;
 
-		if (active) {
-
+		if (active)
+		{
 			TransitionStack* stack = TransitionStack::array[stack_id];
 
 			active = 0;
@@ -39,19 +41,19 @@ namespace XGK {
 		}
 	}
 
-	void Transition::start (
-
-		uint64_t _duration,
-		void (* _process_callback) (const float),
-		void (* _end_callback) (const float)
-	) {
-
-		if (active) {
-
+	void Transition::start
+	(
+		const uint64_t& _duration,
+		void (* _process_callback) (const float&),
+		void (* _end_callback) (const float&)
+	)
+	{
+		if (active)
+		{
 			end_callback(interpolation);
 		}
-		else {
-
+		else
+		{
 			active = 1;
 
 			TransitionStack::push_s(this);
@@ -64,14 +66,14 @@ namespace XGK {
 		time_gone = 0;
 	}
 
-	void Transition::start2 (
-
-		uint64_t _duration,
-		void (* _process_callback) (const float)
+	void Transition::start2
+	(
+		const uint64_t& _duration,
+		void (* _process_callback) (const float&)
 	) {
 
-		if (!active) {
-
+		if (!active)
+		{
 			active = 1;
 
 			TransitionStack::push_s(this);
@@ -84,8 +86,8 @@ namespace XGK {
 		time_gone = 0;
 	}
 
-	void Transition::update (const uint64_t frame_time) {
-
+	void Transition::update (const uint64_t& frame_time)
+	{
 		time_gone += frame_time;
 
 		interpolation = ((float) time_gone) / ((float) duration);
@@ -94,8 +96,8 @@ namespace XGK {
 
 		process_callback(interpolation);
 
-		if (time_gone >= duration) {
-
+		if (time_gone >= duration)
+		{
 			cancel();
 		}
 
