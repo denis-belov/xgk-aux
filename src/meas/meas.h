@@ -4,9 +4,11 @@
 
 namespace XGK::AUX::MEAS
 {
-  void getFramerate (void);
-  void getAverageFrametime (void);
+  void printFramerate (void);
+  void printAverageFrametime (void);
+   // rename
   void getTime (void);
+   // rename
   void getTime2 (void);
   void calculateFrametime (uint64_t* frame_time);
 }

@@ -5,7 +5,7 @@
 
 namespace XGK::AUX::MEAS
 {
-  void getFramerate (void)
+  void printFramerate (void)
   {
     using namespace std::chrono;
 
@@ -35,7 +35,7 @@ namespace XGK::AUX::MEAS
     }
   }
 
-  void getAverageFrametime (void)
+  void printAverageFrametime (void)
   {
     using namespace std::chrono;
 
