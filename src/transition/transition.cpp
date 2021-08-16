@@ -8,6 +8,12 @@
 using std::cout;
 using std::endl;
 
+
+
+using callback_t = void (*) (const float&);
+
+
+
 namespace XGK
 {
 	void idle_function (const float&) {}
@@ -16,9 +22,7 @@ namespace XGK
 
 	void Transition::cancel (void)
 	{
-		cout << "cancel" << endl;
-
-		TransitionStack* stack = TransitionStack::array[stack_id];
+		TransitionStack* stack { TransitionStack::array[stack_id] };
 
 		active = 0;
 
@@ -28,11 +32,9 @@ namespace XGK
 
 	void Transition::cancel2 (void)
 	{
-		cout << "cancel2" << endl;
-
 		if (active)
 		{
-			TransitionStack* stack = TransitionStack::array[stack_id];
+			TransitionStack* stack { TransitionStack::array[stack_id] };
 
 			active = 0;
 
@@ -43,9 +45,9 @@ namespace XGK
 
 	void Transition::start
 	(
-		const uint64_t& _duration,
-		void (* _process_callback) (const float&),
-		void (* _end_callback) (const float&)
+		const size_t& _duration,
+		callback_t _process_callback,
+		callback_t _end_callback
 	)
 	{
 		if (active)
@@ -68,10 +70,10 @@ namespace XGK
 
 	void Transition::start2
 	(
-		const uint64_t& _duration,
-		void (* _process_callback) (const float&)
-	) {
-
+		const size_t& _duration,
+		callback_t _process_callback
+	)
+	{
 		if (!active)
 		{
 			active = 1;
@@ -86,13 +88,11 @@ namespace XGK
 		time_gone = 0;
 	}
 
-	void Transition::update (const uint64_t& frame_time)
+	void Transition::update (const size_t& frame_time)
 	{
 		time_gone += frame_time;
 
 		interpolation = ((float) time_gone) / ((float) duration);
-
-		// cout << interpolation << endl;
 
 		process_callback(interpolation);
 

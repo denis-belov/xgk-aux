@@ -9,8 +9,8 @@ namespace XGK {
 	// alignas
 	struct TransitionStack {
 
-		static uint64_t index;
-		static uint64_t size;
+		static size_t index;
+		static size_t size;
 		static std::vector<TransitionStack*> vector;
 		static TransitionStack** array;
 
@@ -18,10 +18,10 @@ namespace XGK {
 
 
 
-		uint64_t id;
-		uint64_t length;
-		uint64_t counter;
-		uint64_t frame_time;
+		size_t id;
+		size_t length;
+		size_t counter;
+		size_t frame_time;
 
 		std::chrono::time_point<std::chrono::system_clock> program_time;
 		std::chrono::time_point<std::chrono::system_clock> last_program_time;
@@ -29,7 +29,7 @@ namespace XGK {
 		std::vector<Transition*> dynamic_storage;
 		Transition** static_storage;
 
-		TransitionStack (const uint64_t);
+		TransitionStack (const size_t&);
 		~TransitionStack (void);
 		void update (void);
 		void push (Transition*);

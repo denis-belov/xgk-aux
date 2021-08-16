@@ -1,27 +1,31 @@
+#include <iostream>
+
 #include <transition/transition.h>
 #include "transition-stack.h"
 
-#include <iostream>
+
 
 using std::cout;
 using std::endl;
 
-namespace XGK {
-
-	uint64_t TransitionStack::index = 0;
-	uint64_t TransitionStack::size = 0;
+namespace XGK
+{
+	size_t TransitionStack::index {};
+	size_t TransitionStack::size {};
 	std::vector<TransitionStack*> TransitionStack::vector;
-	TransitionStack** TransitionStack::array = nullptr;
+	TransitionStack** TransitionStack::array {};
+
+
 
 	// Pushes transition into stacks sequentually. Useful with multithreading.
-	void TransitionStack::push_s (Transition* transition) {
-
-		if (TransitionStack::index < TransitionStack::size - 1) {
-
+	void TransitionStack::push_s (Transition* transition)
+	{
+		if (TransitionStack::index < TransitionStack::size - 1)
+		{
 			++TransitionStack::index;
 		}
-		else {
-
+		else
+		{
 			TransitionStack::index = 0;
 		}
 
@@ -30,8 +34,8 @@ namespace XGK {
 
 
 
-	TransitionStack::TransitionStack (const uint64_t size) {
-
+	TransitionStack::TransitionStack (const size_t& size)
+	{
 		id = TransitionStack::size++;
 
 		// cout << "created " << id << endl;
@@ -50,22 +54,22 @@ namespace XGK {
 		TransitionStack::array = TransitionStack::vector.data();
 	}
 
-	TransitionStack::~TransitionStack (void) {
-
+	TransitionStack::~TransitionStack (void)
+	{
 		// cout << "destroyed " << id << endl;
 	}
 
 
-	void TransitionStack::update (void) {
-
-		for (counter = 0; static_storage[counter]; counter++) {
-
+	void TransitionStack::update (void)
+	{
+		for (counter = 0; static_storage[counter]; ++counter)
+		{
 			static_storage[counter]->update(frame_time);
 		}
 	}
 
-	void TransitionStack::push (Transition* transition) {
-
+	void TransitionStack::push (Transition* transition)
+	{
 		transition->index = length;
 		transition->stack_id = id;
 
@@ -74,8 +78,8 @@ namespace XGK {
 		++length;
 	}
 
-	void TransitionStack::calculateFrametime (void) {
-
+	void TransitionStack::calculateFrametime (void)
+	{
 		program_time = std::chrono::system_clock::now();
 		frame_time = std::chrono::duration_cast<std::chrono::nanoseconds>(program_time - last_program_time).count();
 		last_program_time = program_time;
