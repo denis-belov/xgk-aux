@@ -66,6 +66,8 @@ namespace XGK
 		{
 			static_storage[counter]->update(frame_time);
 		}
+
+		frame_time = 0;
 	}
 
 	void TransitionStack::push (Transition* transition)
@@ -81,7 +83,7 @@ namespace XGK
 	void TransitionStack::calculateFrametime (void)
 	{
 		program_time = std::chrono::system_clock::now();
-		frame_time = std::chrono::duration_cast<std::chrono::nanoseconds>(program_time - last_program_time).count();
+		frame_time += std::chrono::duration_cast<std::chrono::nanoseconds>(program_time - last_program_time).count();
 		last_program_time = program_time;
 	}
 }

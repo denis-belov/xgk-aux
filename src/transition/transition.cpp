@@ -10,13 +10,13 @@ using std::endl;
 
 
 
-using callback_t = void (*) (const float&);
+using callback_t = void (*) (const size_t&);
 
 
 
 namespace XGK
 {
-	void idle_function (const float&) {}
+	void idle_function (const size_t&) {}
 
 
 
@@ -52,7 +52,7 @@ namespace XGK
 	{
 		if (active)
 		{
-			end_callback(interpolation);
+			end_callback(time_gone);
 		}
 		else
 		{
@@ -61,7 +61,6 @@ namespace XGK
 			TransitionStack::push_s(this);
 		}
 
-		interpolation = 0.0f;
 		duration = _duration;
 		process_callback = _process_callback;
 		end_callback = _end_callback;
@@ -81,7 +80,6 @@ namespace XGK
 			TransitionStack::push_s(this);
 		}
 
-		interpolation = 0.0f;
 		duration = _duration;
 		process_callback = _process_callback;
 		end_callback = idle_function;
@@ -92,13 +90,19 @@ namespace XGK
 	{
 		time_gone += frame_time;
 
-		interpolation = ((float) time_gone) / ((float) duration);
-
-		process_callback(interpolation);
-
 		if (time_gone >= duration)
 		{
+			// time_gone = duration;
+
+			process_callback(duration);
+			// process_callback(duration - (time_gone - frame_time));
+
 			cancel();
+		}
+		else
+		{
+			process_callback(time_gone);
+			// process_callback(frame_time);
 		}
 
 		// if (time_gone >= duration) {
