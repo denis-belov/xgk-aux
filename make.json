@@ -3,6 +3,14 @@
 
 	"target_name": "xgk-aux",
 
+	"variables":
+	{
+		"gcc-x64":
+		{
+			"CUSTOM_CPPFLAGS": "-fPIC"
+		}
+	},
+
 	"include_directories": "$(SRC)",
 
 	"source_files":
