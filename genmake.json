@@ -1,0 +1,40 @@
+{
+	"entries":
+	{
+		"type": "static",
+
+		"name": "xgk-aux",
+
+		"include_directories": "$(SRC)",
+
+		"flags_additional": "-fPIC",
+
+		"watch_files":
+		[
+			{
+				"file": "$(SRC)/meas/meas.cpp",
+				"watch_files": "$(SRC)/meas/meas.h"
+			},
+
+			{
+				"file": "$(SRC)/transition/transition.cpp",
+
+				"watch_files":
+				[
+					"$(SRC)/transition-stack/transition-stack.h",
+					"$(SRC)/transition/transition.h"
+				]
+			},
+
+			{
+				"file": "$(SRC)/transition-stack/transition-stack.cpp",
+
+				"watch_files":
+				[
+					"$(SRC)/transition-stack/transition-stack.h",
+					"$(SRC)/transition/transition.h"
+				]
+			}
+		]
+	}
+}

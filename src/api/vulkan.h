@@ -670,7 +670,7 @@ namespace XGK::VULKAN
 		};
 
 		return info;
-	}z
+	}
 
 
 
