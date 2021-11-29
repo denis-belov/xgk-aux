@@ -7,7 +7,7 @@
 
 		"include_directories": "$(SRC)",
 
-		"flags_additional": "-fPIC",
+		"flags_additional": "$(STD_20) $(NO_LINK) $(VERBOSE) $(OPT_FASTX) $(SSE) -fPIC",
 
 		"watch_files":
 		[

@@ -1,14 +1,19 @@
 #include <cstdint>
 #include <vector>
-#include <chrono>
 
-namespace XGK {
+#ifndef __wasm__
+	#include <chrono>
+#endif
 
+
+
+namespace XGK
+{
 	struct Transition;
 
 	// alignas
-	struct TransitionStack {
-
+	struct TransitionStack
+	{
 		static size_t index;
 		static size_t size;
 		static std::vector<TransitionStack*> vector;
@@ -23,8 +28,13 @@ namespace XGK {
 		size_t counter;
 		size_t frame_time;
 
-		std::chrono::time_point<std::chrono::system_clock> program_time;
-		std::chrono::time_point<std::chrono::system_clock> last_program_time;
+		#ifndef __wasm__
+			std::chrono::time_point<std::chrono::system_clock> program_time;
+			std::chrono::time_point<std::chrono::system_clock> last_program_time;
+		#else
+			double program_time;
+			double last_program_time;
+		#endif
 
 		std::vector<Transition*> dynamic_storage;
 		Transition** static_storage;

@@ -1,5 +1,5 @@
 #include <cstdint>
-#include <mutex>
+// #include <mutex>
 
 
 
@@ -13,7 +13,7 @@ namespace XGK
 		using callback_t = void (*) (const size_t&);
 
 		// revise types
-		std::mutex mutex;
+		// std::mutex mutex;
 		size_t time_gone;
 		size_t duration;
 		size_t index;

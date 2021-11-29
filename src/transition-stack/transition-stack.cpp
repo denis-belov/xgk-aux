@@ -8,6 +8,12 @@
 using std::cout;
 using std::endl;
 
+
+
+extern "C" double date_now (void);
+
+
+
 namespace XGK
 {
 	size_t TransitionStack::index {};
@@ -44,8 +50,13 @@ namespace XGK
 		counter = 0;
 		frame_time = 0;
 
-		program_time = std::chrono::system_clock::now();
-		last_program_time = std::chrono::system_clock::now();
+		#ifndef __wasm__
+			program_time = std::chrono::system_clock::now();
+			last_program_time = std::chrono::system_clock::now();
+		#else
+			program_time = date_now();
+			last_program_time = date_now();
+		#endif
 
 		dynamic_storage.resize(size);
 		static_storage = dynamic_storage.data();
@@ -82,8 +93,14 @@ namespace XGK
 
 	void TransitionStack::calculateFrametime (void)
 	{
-		program_time = std::chrono::system_clock::now();
-		frame_time += std::chrono::duration_cast<std::chrono::nanoseconds>(program_time - last_program_time).count();
-		last_program_time = program_time;
+		#ifndef __wasm__
+			program_time = std::chrono::system_clock::now();
+			frame_time += std::chrono::duration_cast<std::chrono::nanoseconds>(program_time - last_program_time).count();
+			last_program_time = program_time;
+		#else
+			program_time = date_now();
+			frame_time += program_time - last_program_time;
+			last_program_time = program_time;
+		#endif
 	}
 }
