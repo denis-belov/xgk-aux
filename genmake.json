@@ -1,4 +1,17 @@
 {
+	"variables":
+	{
+		"clang-wasm32":
+		{
+			"FLAGS_ADD": "-matomics -mbulk-memory"
+		},
+
+		"clang-wasm64":
+		{
+			"FLAGS_ADD": "-matomics -mbulk-memory"
+		}
+	},
+
 	"entries":
 	{
 		"type": "static",
@@ -7,7 +20,7 @@
 
 		"include_directories": "$(SRC)",
 
-		"flags_additional": "$(STD_20) $(NO_LINK) $(VERBOSE) $(OPT_FASTX) $(SSE) -fPIC",
+		"flags_additional": "$(STD_20) $(NO_LINK) $(VERBOSE) $(OPT_FASTX) $(SSE) $(FLAGS_ADD) -fPIC",
 
 		"watch_files":
 		[
