@@ -44,8 +44,8 @@
 
 				"watch_files":
 				[
-					"$(SRC)/transition-stack/transition-stack.h",
-					"$(SRC)/transition/transition.h"
+					"$(SRC)/transition/transition.h",
+					"$(SRC)/transition-stack/transition-stack.h"
 				]
 			}
 		]
