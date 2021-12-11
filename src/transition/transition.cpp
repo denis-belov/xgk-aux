@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "transition-stack/transition-stack.h"
-#include "transition.h"
+#include "xgk-aux/src/transition-stack/transition-stack.h"
+#include "xgk-aux/src/transition/transition.h"
 
 
 

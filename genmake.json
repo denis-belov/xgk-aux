@@ -1,13 +1,20 @@
 {
 	"variables":
 	{
+		"gcc-x64":
+		{
+			"REPS": "/home/denis/reps"
+		},
+
 		"clang-wasm32":
 		{
+			"REPS": "/home/denis/reps",
 			"FLAGS_ADD": "-matomics -mbulk-memory"
 		},
 
 		"clang-wasm64":
 		{
+			"REPS": "/home/denis/reps",
 			"FLAGS_ADD": "-matomics -mbulk-memory"
 		}
 	},
@@ -18,7 +25,7 @@
 
 		"name": "xgk-aux",
 
-		"include_directories": "$(SRC)",
+		"include_directories": "$(REPS)/denis-belov",
 
 		"flags_additional": "$(STD_20) $(NO_LINK) $(VERBOSE) $(OPT_FASTX) $(SSE) $(FLAGS_ADD) -fPIC",
 
