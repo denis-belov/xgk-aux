@@ -1,3 +1,6 @@
+// size_t
+#include <cstddef>
+// uint8_t
 #include <cstdint>
 // #include <mutex>
 
@@ -18,6 +21,7 @@ namespace XGK
 		size_t duration;
 		size_t index;
 		size_t stack_id;
+		// TODO: use another type? Bool?
 		uint8_t active;
 
 		callback_t process_callback;

@@ -1,4 +1,5 @@
-#include <cstdint>
+// size_t
+#include <cstddef>
 #include <vector>
 
 #ifndef __wasm__
