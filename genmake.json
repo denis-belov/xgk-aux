@@ -27,7 +27,7 @@
 
 		"include_directories": "$(REPS)/denis-belov",
 
-		"flags_additional": "$(STD_20) $(NO_LINK) $(VERBOSE) $(OPT_FASTX) $(SSE) $(FLAGS_ADD) -fPIC",
+		"flags": "$(STD_20) $(NO_LINK) $(VERBOSE) $(OPT_FASTX) $(SSE) $(FLAGS_ADD) -fPIC",
 
 		"watch_files":
 		[
